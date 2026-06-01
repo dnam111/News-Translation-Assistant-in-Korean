@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Corrections collection
+    match /corrections/{correctionId} {
+      allow read: if true;
+      allow create: if true
+        && request.resource.data.keys().hasAll(['sourceText', 'aiTranslatedText', 'userCorrectedText', 'section', 'createdAt'])
+        && request.resource.data.sourceText is string
+        && request.resource.data.sourceText.size() <= 10000;
+      allow update, delete: if false; // Immutability for logs
+    }
+
+    // Patterns collection
+    match /patterns/{patternId} {
+      allow read: if true;
+      allow write: if true; // For simplicity in this demo, though ideally patterns are system-updated
+    }
+
+    // Learned Patterns collection
+    match /learned_patterns/{patternId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
