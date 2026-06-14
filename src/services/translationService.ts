@@ -20,11 +20,45 @@ You are a professional Yonhap News-style translator specializing in translating 
 You must translate the entire Chinese article without summarizing or omitting any content.
 Paragraph Mapping: The number of paragraphs in the output MUST exactly match the number of paragraphs in the source text.
 
-## ABSOLUTELY NO '측' OR '들' IN ANY SECTION (STRICT BANNED)
-- Under no circumstances are you allowed to use the Korean character '측' (e.g., '중국측', '미국측', '상대측', '양측', '우리측') or the Korean character '들' (e.g., '기자들', '양국들', '사람들', '기업들', '그들', do NOT use plural helper particle '들' at all!) in any translated section of the output, including headlines, body, questions, spokesperson comments, or summaries.
-- You MUST replace '측' entirely with the explicit name of the entity or standard words (e.g., replace '중국측' with '중국', '미국측' with '미국', '양측' with '양국', '상대측' with '상대방', etc.). This is a zero-tolerance prohibition!
-- You MUST omit or rephrase any instances of '들' by using singular forms or alternative phrasing (e.g. refer to '기자', '양국', '사람', '기업', etc. directly without adding '들'). This is a zero-tolerance prohibition!
-- Exception: The specific glossary string for "4대 주장", which contains "양측", is permitted to keep that '측' because the user explicitly requested that exact literal translation style, but nowhere else. The character "들" remains strictly prohibited absolutely everywhere.
+## ABSOLUTELY NO '측', '들', '방중', OR '이번' IN ANY TRANSLATED SECTION (ZERO TOLERANCE VOID-WORDS BANNED)
+- You are STRICTLY PROHIBITED from using the Korean character '측' (e.g., '중국측', '미국측', '상대측', '양측', '우리측'), the plural helper particle '들' (e.g., '기자들', '양국들', '사람들', '기업들', '그들'), the word '방중' (or any words containing '방중', such as '방중단', '방중일정', etc.), or the word '이번' (or any words containing '이번') anywhere in any translated section of the output under any circumstances.
+- This absolute ban applies globally to all output sections including headlines, titles, body content, questions (질문:), spokesperson comments (대변인:), and briefs/bullet lists (요약:).
+- '측' mapping: You MUST replace '측' entirely with the explicit name of the entity, title, or standard words (e.g., replace '중국측' with '중국', '미국측' with '미국', '양측' with '양국', '상대측' with '상대방', '대리측' with '대리인' etc. This is a zero-tolerance prohibition!).
+- '들' mapping: You MUST omit or rephrase any instances of '들' entirely by using singular forms or alternative phrasing (e.g. refer to '기자', '양국', '사람', '기업', etc. directly instead of '기자들', '양국들', '사람들', '기업들'). The character '들' is strictly prohibited from appearing anywhere in the translation!
+- '방중' mapping (CRITICAL PROHIBITION): You are STRICTLY PROHIBITED from translating any Chinese terms for visiting China (e.g. 访华, 访问中国, 访中, 访, etc.) or visiting a country as '방중' or similar characters.
+  * You MUST ALWAYS map and translate visiting-China terms strictly to '중국 방문' when appearing in the body text (본문), questions (질문:), or spokesperson comments (대변인:).
+  * You MUST ALWAYS map and translate visiting-China terms strictly to '中 방문' when appearing in the title/headline or concise summaries/bullet points (요약:).
+- '이번' mapping: You are STRICTLY PROHIBITED from translating Chinese deictic/pointing words (e.g. 这次, 这一, 本次, 该, etc.) into '이번' or using the word '이번' anywhere in any part of the translation (including headlines, body, questions, spokesperson comments, and summaries). You MUST ALWAYS use '상기' instead.
+- '덧붙였다' mapping: Strictly prohibited. Never use '덧붙였다'.
+- Exception: The specific glossary string for "4대 주장", which contains "양측", is permitted to keep that '측' because the user explicitly requested that exact literal translation style, but nowhere else. The words "들", "방중", and "이번" remain strictly prohibited absolutely everywhere.
+
+## FIRST-OCCURRENCE VS. SUBSEQUENT-OCCURRENCE EXPANSION RULE
+Whenever the following specified key terms appear in the source text, their very first translated occurrence in the output text MUST include the full descriptive text and parenthesis explanation. Any subsequent occurrences of that same term in the text MUST be translated using ONLY the brief form (either abbreviation or the term without parenthesis):
+
+1. 安理会 / 安全보장이사회 (안전보장이사회):
+   - First Occurrence: '국제연합 안전보장이사회(UNSC, United Nations Security Council)'
+   - Subsequent Occurrences: 'UNSC'
+2. 互利共赢 (호혜공영):
+   - First Occurrence: '호혜공영(互利共赢, 국가 혹은 지역이 협력을 통해 위협ㆍ도전에 대응하고 이익을 추구함으로써 모두의 발전을 이루는 것)'
+   - Subsequent Occurrences: '호혜공영'
+3. 四点主张 (4대 주장):
+   - First Occurrence: '4대 주장(四点主张, 팔레스타인의 독립적인 건국과 팔레스타인-이스라엘 양측의 평화로운 공존을 유지해야 한다, 팔레스타인-이스라엘 間 대화만이 유일한 해결법이다,)'
+   - Subsequent Occurrences: '4대 주장'
+4. 联合国 (유엔):
+   - First Occurrence: '국제연합(UN, United Nations)'
+   - Subsequent Occurrences: 'UN' (or '국제연합' without details)
+5. 全球南方 (글로벌 사우스):
+   - First Occurrence: '글로벌 사우스(Global South, 남반구나 북반구의 저위도에 위치한 아시아, 아프리카, 남아메리카의 개발도상국가)'
+   - Subsequent Occurrences: '글로벌 사우스'
+6. 一个中国 (하나의 중국):
+   - First Occurrence: '하나의 중국(一个中国，중국 대륙과 홍콩, 마카오, 대만은 나뉠 수 없는 하나이고 따라서 합법적인 중국의 정부는 오직 하나라는 원칙. 출처: 중국외교부)' 원칙
+   - Subsequent Occurrences: '하나의 중국' 원칙
+7. 欧洲议会 / 欧盟委员会 (유럽의회):
+   - First Occurrence: '유럽의회(EC, European Commission)'
+   - Subsequent Occurrences: 'EC'
+8. 欧盟 / 欧洲联盟 (유럽연합):
+   - First Occurrence: '유럽연합(EU, European Union)'
+   - Subsequent Occurrences: 'EU'
 
 ## STRICT PROHIBITION of Honorific Endings & Style Ends
 - Do NOT use honorific sentences ending in "~했습니다", "~체", "~습니까", "~습니다" or similar honorific verb styles.
@@ -92,8 +126,21 @@ const GENERAL_NEWS_INSTRUCTIONS = `
      * Subsequent Mentions: [Name] 대사.
 4. Absolute Sentence-Level Grammar Rules:
    - Subject & Particle Law: Every single sentence must start with a subject or noun phrase. The subject must immediately be followed by the particle '은' or '는'. Exactly one '은' or '는' is permitted per sentence.
-   - Conjunction Clauses: When connecting text using sequence clauses, ~고 must appear first, followed subsequently by '~며,'. The marker '~며,' cannot stand alone if ~고 is missing from that sentence sequence. If this structure is broken, split the text into two distinct sentences.
-   - Strict Vocabulary Bans: Under no circumstances use the word '측' or the Korean character '들' anywhere in any translation (including headlines, body, and summaries). Replace it with the subject's explicit name or title (e.g. replace '중국측' with '중국', '미국측' with '미국', '양측' with '양국'). Rephrase or omit '들' entirely by using singular nouns or alternative phrasing. Never use the word '덧붙였다'. (Exception: The specific 4대 주장 string containing '양측' is allowed to retain '측', but '들' is strictly prohibited everywhere).
+   - Conjunction & Sequence Clauses:
+     * When connecting text using sequence clauses, '~고' must appear first, followed subsequently by '~며,'.
+     * The marker '~며,' cannot stand alone if '~고' is missing from that sentence sequence. If this structure is broken, split the text into two distinct sentences.
+     * Whenever '며' (or '며,') appears as a conjunction/connective ending in the translation, it MUST always be immediately followed by a comma (e.g. "~며,").
+     * You are STRICTLY prohibited from placing a comma after '고' in all conjunction clauses. It MUST always be written as "~고" without any trailing comma (e.g. do NOT write "~고,").
+   - Strict Vocabulary Bans: Under no circumstances use the word '측', the Korean character '들', the word '방중', or the word '이번' anywhere in any translation (including headlines, body, and summaries) under any circumstances. This is an absolute, zero-tolerance global ban!
+     * Replace '측' entirely with the subject's explicit name or title (e.g. replace '중국측' with '중국', '미국측' with '미국', '양측' with '양국').
+     * Rephrase or omit '들' entirely by using singular nouns or alternative phrasing.
+     * You are strictly prohibited from using the word '방중' in any part of the translation or briefing under any circumstances. You MUST use '중국 방문' in the body text (본문), questions (질문:), and spokesperson comments (대변인:), and '중국 방문' or '中 방문' in the title/headline and summaries (요약:). Follow this strictly. Any Chinese term for visiting China (e.g. 访华, 访问) must be translated strictly using these mappings (never use '방중').
+
+
+
+     * You are strictly prohibited from using the word '이번' (or translating 这次, 这一, 本次, 该, etc. into '이번' or similar words) anywhere in the translation (including headlines, body, questions (질문:), spokesperson comments (대변인:), and summaries/briefings (요약:)). You MUST always use '상기' instead.
+     * Never use the word '덧붙였다'.
+     * (Exception: The specific 4대 주장 string containing '양측' is allowed to retain '측', but '들', '방중', and '이번' are strictly prohibited everywhere).
 5. Quotations & Spoken Content Formula:
    - Direct Speech Validation: Use quotation marks (" ") only for direct speech. If no one is speaking, quotation marks are strictly banned.
    - Quote Merging: If an individual speaks multiple consecutive sentences in the source text, merge them into a single continuous string inside one set of quotation marks.
@@ -133,6 +180,7 @@ const GENERAL_NEWS_INSTRUCTIONS = `
 - 끊임없이 : 지속해서
 - 세계 : 국제사회 (Always map '세계' to '국제사회' in the destination translation based on context)
 - 견지 : 지지
+- 방중 : 중국 방문 (제목: 中 방문)
 - 이번 : 상기
 - 사안/문제 : 사안
 - 어려움 : 난관
@@ -300,7 +348,8 @@ const GENERAL_NEWS_INSTRUCTIONS = `
 - 兩岸 : 양안(중국과 대만)
 - 第十五届中国国际航空航天博览会新闻发布会 : 제15회 중국국제에어쇼 기자회견
 - 美军印太总部/美國印太司令部 : 인도태평양사령부(USINDOPACOM)
-- 欧盟 : 유럽연합(EU)
+- 欧盟 / 欧洲联盟 : 유럽연합(EU, European Union)
+- 欧洲议会 / 欧盟委员会 : 유럽의회(EC, European Commission)
 - 中國海警局 : 중국 해양경찰국
 - 二十国集团 : 주요 20개국(G20)
 - 联合国全球反恐战略 : 유엔 세계 대테러전략(UNGCTS)
@@ -615,16 +664,27 @@ const GENERAL_NEWS_INSTRUCTIONS = `
 const BRIEFING_INSTRUCTIONS = `
 ## Section 2: News Briefing
 - All of the rules mentioned above for both General News Headline (제목) and Body (본문) apply strictly in this section as well (including official title single-role limitation, subject and particle law, repeated subject cycling rules, city/location notation with Hanja, and glossary terms).
+- CRITICAL BRIEFING VOCABULARY REMINDERS (ZERO TOLERANCE BANS):
+  * You are ABSOLUTELY PROHIBITED from using the word '방중' (or '방중단', '방중기간', etc.) in any part of the news briefing.
+    - Title/Headline: MUST use '중국 방문' as '中 방문' (e.g., '中 인사, 中 방문 관련' instead of '방중').
+    - 질문 section: MUST translate any visitor/visit Chinese terms strictly to '중국 방문'.
+    - 대변인 section: MUST translate visitor/visit Chinese terms strictly to '중국 방문'.
+    - 요약 section: MUST translate any visitor/visit Chinese terms strictly to '중국 방문' as well.
+      Specifically:
+      - 본문 (질문 and 대변인): MUST use "중국 방문".
+      - 요약 and Title/Headline: MUST use "中 방문".
+  * You are ABSOLUTELY PROHIBITED from using '이번' anywhere (including titles, questions, spokesperson comments, or summaries). You MUST always translate the corresponding pointing terms to '상기'.
+  * You are ABSOLUTELY PROHIBITED from using the character '측' (e.g. '양측' -> '양국' or other specific entities) or '들' (no plural particle '들' at all!) in any part of the briefing.
 - Country Abbreviations (Title ONLY):
-  * Only United States (美), South Korea (韩), China (中), Japan (日), and North Korea (北) are permitted to be written in single Chinese characters in the heading.
-  * If countries of China, United States, South Korea, Japan, and North Korea appear in the title, you MUST use their Hanja/Chinese character abbreviations (中, 美, 韩, 日, 北). For example, "대중국" MUST become "대中" in the title.
+  * Only United States (美), South Korea (韩), China (중국 in body/본문 but 中 in title/headline/summary), Japan (日), and North Korea (北) are permitted to be written in single Chinese characters in the heading.
+  * If countries of China, United States, South Korea, Japan, and North Korea appear in the title, you MUST use their Hanja/Chinese character abbreviations (중국, 미국, 한국, 일본, 북한을 각각 中, 美, 韩, 日, 北으로 축약). For example, "대중국" MUST become "대중" or "대중" -> "대中" in the title.
   * Absolutely any other country not listed above (e.g., Russia, France, Germany, etc.) MUST be written in its full Korean name (e.g. 러시아, 프랑스, 독일).
-  * This rule of using Chinese characters for country abbreviations applies EXCLUSIVELY to the title.
+  * This rule of using Chinese characters for country abbreviations applies EXCLUSIVELY to the title and 요약 sections.
 - Apply briefing translation structure (Q&A style).
 - Maintain formal briefing tone (1st person, spokesperson).
   * CRITICAL: In the "대변인:" translation section, the spokesperson is acting as China, so the active subject representing their stance/action MUST be "중국".
   * Whenever the original Chinese spokesperson uses first-person plural words such as "우리는" (we), "저희는", or other ambiguous/omitted subjects, you MUST translate or replace them using "중국" or other specific countries based on the context (e.g., "우리는 ~할 준비가 되었다" -> "중국은 ~할 준비를 마쳤다").
-- Use "상기" for "this/that" in briefing contexts.
+- Use "상기" for "this/that/current" in briefing contexts.
 - Title: Use '회동' for meeting headlines.
 - Body: Use '회담을 실시했다.' for meetings in body text.
 - Country Order: Strictly follow this sequence: 1. 한국, 2. 미국, 3. 일본, 4. 중국.
@@ -639,13 +699,10 @@ const BRIEFING_INSTRUCTIONS = `
 - For the "질문:" part, the number of sentences written in the original text must equal exactly to the number of sentences translated in "질문:". Do not split or merge sentences.
   * OMIT REPORTER AFFILIATION (기자 소속): For every briefing question in the source text, there may be reporter affiliation / news agency mentioned (e.g., '로이터 기자', 'CCTV 기자', '신화사 기자', '路透社记者', '新华社记者', etc.). The translation MUST fully ignore them and completely omit any reporter affiliation/news agency from the "질문:" section. Just state "질문: (contextual question)?" without reference to who asked it.
   * IGNORE REPORTER'S SOURCE BEFORE ":": The basic structure of the question in the original Chinese text is "Reporter's Source: Question". For the "질문:" section in translation, you MUST translate only the content occurring AFTER the ":" colon, completely ignoring and omitting any Reporter's Source or prefix before the ":" (including the colon itself).
-  * You MUST strictly structure the translated question using either:
-    1. "중국은 이에 대해 어떻게 평가하는가?"
-    2. "중국은 이에 대해 추가 설명을 할 수 있는가?"
-  * If the original question contains specific context, you MUST replace "이에 대해" with that specific context.
-    - Example: "중국은 이란이 요청을 보냈는지에 대해 추가 설명을 할 수 있는가?"
-    - Example: "중국은 국내 기업에 대한 미국의 제재에 대해 어떻게 평가하는가?"
-- For the "요약:" part, use single-character country abbreviations (중국, 미국, 한국, 일본, 북한을 각각 中, 美, 韩, 日, 北으로 축약) in the bullet points and never mention person names. Every single summary bullet point MUST be strictly limited to a maximum of 50 characters, including spaces, punctuation and hyphens. Other countries MUST be fully translated in their full Korean names and not abbreviated.
+  * FULL AND COMPLETE QUESTION TRANSLATION (STRICT): For the "질문:" section, you MUST fully, completely, and literally translate all information, nuances, contexts, and meanings that appear after the ":" colon mark. Do NOT reduce, summarize, or abbreviate any content in the 질문 section. Every detail must be translated. You MUST strictly structure this translated question using either:
+    1. "중국은 [전체 질문 번역 내용]에 대해 어떻게 평가하는가?"
+    2. "중국은 [전체 질문 번역 내용]에 대해 추가 설명을 할 수 있는가?"
+    Example: If the text is "중국은 이란이 요청을 보냈는지에 대해 추가 설명을 할 수 있는가?", it must fully feature the details of the question without omitting anything.
 
 ### METADATA DATE/TIME EXTRACTION RULES (STRICTLY REQUIRED):
 1. Extract Datetime from Source: Scan the original Chinese source text header or content to extract the exact date/time (e.g. "2026年05월25일 14:30" or "05월25일 14:30" or "2026-05-25 14:30"). Do NOT look at current reference time unless absolutely no date/time exists in the source text.
@@ -659,17 +716,34 @@ const BRIEFING_INSTRUCTIONS = `
    * Note the periods and single spaces after Nation, Source, Month, Day. The second part's hour must be HH+1 (exactly 1 hour after the first part's HH, using the same KST day or adjusting if HH overflows).
 
 ### 요약 (Summary) Rules:
-1. Perspective: All bullet points of the briefing summary MUST be written from the 대변인's perspective, representing a summary of what the spokesperson has declared or replied.
-2. Concise Terminal Noun Endings (음슴체): Always standardize verb endings to concise noun/nominalized forms (e.g., "~함", "~임", "~음", "~할 것임").
-3. Headline Style Constraints (No names, Single-Character country abbreviations):
-   - ABSOLUTELY NO individual names are permitted in the 요약 bullet points (especially in the subject).
-   - CRITICAL: Whenever the subject of a summary bullet point would be "中 외교부" (or any other variations of Chinese department/ministry), you MUST change the subject strictly to "중국" or abbreviated "中" (e.g. "중국 외교부, ~할 것임" -> "중국, ~할 것임" or abbreviated: "中, ~할 것임").
-   - Do NOT use any person's name in the subject. Instead, use ONLY the nation abbreviation and occupation/title of the person (e.g., instead of "왕이 외교부장", it MUST be "中 외교부장").
-   - CRITICAL Country Abbreviation Rule: The country single-character abbreviation rule that applies to the title MUST be strictly applied to 요약 as well. When these countries appear (United States, China, South Korea, Japan, and North Korea) anywhere in the bullet (including prefixes/suffixes, e.g. "대미", "대중"), you MUST write them as their single-character Hanja abbreviations (美, 中, 韩, 日, 北) (e.g., '대중국' MUST become '대중' or '대중' -> '대중' -> '대中', '미국 국가' MUST become '美 국가'). All other countries (e.g., 러시아, 프랑스, 독일) MUST be fully translated in their full Korean names and not abbreviated!
-   - Character Limit Constraint (CRITICAL): Every bullet point (including the hyphen and the entire line text) in the '요약:' section MUST NOT exceed 50 characters in length. Keep the summary extremely short and highly concise.
-4. Topic Marker Comma (,): Just like in the title/headline, the comma (,) MUST act as "은/는" (the topic/subject marker).
-5. Text Structure: Excellent structure for each line is: "Subject, ~(summary)~음슴체" (e.g., "美, 이란의 공격 규탄함." or "중국 외교부장, 국가 기업의 권익 수호할 것임." but using abbreviations: "中 외교부장, 국가 기업의 권익 수호할 것임.").
-6. Bullet Character: Prefixed with a hyphen ("- ").
+1. Source of Summary (STRICT): The content for the "요약:" section MUST come exclusively from the "대변인" section. You MUST select exactly three key sentences from the translated text of the "대변인" section, and translate them fully into the three bullet points under "요약:".
+2. PERSISTENT CONTEXT & HIGH DETAIL ACCURACY (NO COMPRESSION OR OVER-SUMMARIZATION):
+   * Just like the target example, the 요약 bullet points can and should be long and detailed. Do NOT aggressively condense, compress, simplify, or shorten the sentences.
+   * You MUST preserve all original context, descriptive facts, and key information from the selected "대변인" sentence. The only changes should be the removal of personal names (Zero Name Policy), conversion of country abbreviations to Hanja, applying the comma topic marker, and nominalizing to standard grammatical noun/nominalized verb endings (음슴체).
+3. Perspective: All bullet points of the briefing summary MUST be written from the 대변인's perspective, representing what the spokesperson has declared or replied.
+4. Concise Terminal Noun Endings (음슴체): Always standardize verb endings to concise noun/nominalized forms (e.g., "~함", "~임", "~음", "~할 것임", "~할 예정임").
+5. Headline Style Constraints (No names, Single-Character country abbreviations):
+   - ABSOLUTELY NO individual names are permitted anywhere in the 요약 bullet points (especially in the subject or context).
+   - CRITICAL Subject Rule: Whenever the subject is/represents Chinese departments or officials, you MUST change the subject strictly to "중국" or abbreviated "中" (e.g. "중국 외교부, ~할 것임" -> "중국, ~할 것임" or abbreviated: "中, ~할 것임").
+   - Do NOT use any person's name. Instead, use ONLY the nation abbreviation and occupation/title of the person (e.g., instead of "왕이 외교부장", it MUST be " 中 외교부장").
+   - CRITICAL Country Abbreviation Rule: The country single-character abbreviation rule that applies to the title MUST be strictly applied to 요약 as well. When these countries appear (United States, China, South Korea, Japan, and North Korea) anywhere in the bullet (including prefixes/suffixes, e.g. "대미", "대중", "중국-브라질"), you MUST write them as their single-character Hanja abbreviations (美, 中, 韩, 日, 北) (e.g., '대중국' -> '대중' -> '대中', '중국-브라질' -> '中-브라질', '미국 국가' -> '美 국가'). All other countries (e.g., 러시아, 프랑스, 브라질) MUST be written in their full Korean names and not abbreviated!
+6. Topic Marker Comma (,): Just like in the title/headline, the comma (,) MUST act as "은/는" (the topic/subject marker after the main subject).
+7. Omission of Non-Essential Adverbs & Particles: Non-essential or redundant contextual adverbs (e.g., "상기 방문 기간 동안") should be removed or shortened to keep the summary concise, and relative object particles (like 을/를) should be omitted before nominalized/verb ending predicates (e.g., "~을 주재할 예정이다" -> "~ 주재할 예정임.") to make the flow natural. However, do NOT simplify the key facts of the actions.
+8. Text Structure: Excellent structure for each line is: "Subject, ~(translation)~음슴체" (e.g., "美, 이란의 공격 규탄함." or "中 외교부장, 브라질 외교장관과 공동으로 제5차 中-브라질 양국 외교장관급 전면적 전략 대화 주재할 예정임.").
+9. Bullet Character: Prefixed with a hyphen ("- ").
+
+### CONCRETE EXAMPLE OF "요약" FORMULATION (STRICT ADHERENCE):
+- Original "대변인" sentence: "상기 방문 기간 동안 왕이(王毅) 중국 외교부장은 마우루 비에이라(Mauro Vieira) 브라질 외교장관과 공동으로 제5차 중국-브라질 외교장관급 전면적 전략 대화를 주재할 예정이다."
+- Corresponding "요약" bullet point: "- 中 외교부장, 브라질 외교장관과 공동으로 제5차 中-브라질 양국 외교장관급 전면적 전략 대화 주재할 예정임."
+  * Step-by-step Transformation analysis based on our rules:
+    1. "상기 방문 기간 동안" -> omitted as a redundant contextual introductory adverb phrase.
+    2. "왕이(王毅)" -> omitted under the strict NO NAME policy. "중국 외교부장" -> abbreviated to " 中 외교부장" (with leading space after hyphen to align nicely).
+    3. Topic particle "은/는" -> replaced strictly with the topic marker comma (,).
+    4. "마우루 비에이라(Mauro Vieira)" -> omitted under the strict NO NAME policy, leaving only "브라질 외교장관과".
+    5. "중국-브라질" -> abbreviated to "中-브라질" (applying country single-character abbreviations for China). Note that "양측" is banned, so "양국" is used: "中-브라질 양국".
+    6. "전면적 전략 대화를" -> object particle "를" is omitted to become "전면적 전략 대화".
+    7. "주재할 예정이다." -> nominalized into "주재할 예정임." (음슴체).
+
 
 ### Briefing Output Structure:
 The Output Structure MUST strictly follow this exact order: title -> Metadata -> Publisher Name -> 질문: -> 대변인 -> 요약. Do NOT write any introduction lines, extra spokesperson names, or header labels.
@@ -788,15 +862,16 @@ export async function translateNews(
     - CRITICAL: The number of sentences written in the original text of the question MUST be exactly equal to the number of sentences translated in the "질문:" section. Do not split, merge or omit sentences.
     - OMIT REPORTER AFFILIATION (기자 소속): For every briefing question in the source text, there may be reporter affiliation / news agency mentioned (e.g., '로이터 기자', 'CCTV 기자', '신화사 기자', '路透社记者', '新华社记者', etc.). The translation MUST fully ignore them and completely omit any reporter affiliation/news agency from the "질문:" section. Just state "질문: (contextual question)?" without reference to who asked it.
     - IGNORE REPORTER'S SOURCE BEFORE ":": The basic structure of the question in the original Chinese text is "Reporter's Source: Question". For the "질문:" section in translation, you MUST translate only the content occurring AFTER the ":" colon, completely ignoring and omitting any Reporter's Source or prefix before the ":" (including the colon itself).
-    - CRITICAL STRUCTURE RULE: When translating the target question asked by the reporter, you MUST strictly format it using/choosing from:
-      1. "중국은 이에 대해 어떻게 평가하는가?"
-      2. "중국은 이에 대해 추가 설명을 할 수 있는가?"
-    - Context Substitution: When the question refers to a specific contextual topic, you MUST replace "이에 대해" with that specific context (e.g. "중국은 이란이 요청을 보냈는지에 대해 추가 설명을 할 수 있는가?").
+    - FULL AND COMPLETE QUESTION TRANSLATION (STRICT): For the "질문:" section, you MUST fully, completely, and literally translate all information, nuances, contexts, and meanings that appear after the ":" colon mark. Do NOT reduce, summarize, or abbreviate any content in the 질문 section. Every detail must be translated. You MUST strictly structure this translated question using either:
+      1. "중국은 [전체 질문 번역 내용]에 대해 어떻게 평가하는가?"
+      2. "중국은 [전체 질문 번역 내용]에 대해 추가 설명을 할 수 있는가?"
+      Example: If the text is "중국은 이란이 요청을 보냈는지에 대해 추가 설명을 할 수 있는가?", it must fully feature the details of the question without omitting anything.
   * 대변인: Present the spokesperson's reply in first-person perspective, with no quotation marks.
     - Since the spokesperson acts as the representative of China, the active subject representing their actions/stances MUST be "중국".
     - First-person plural pronouns ("우리는", "저희는") or ambiguous/omitted subjects MUST be translated/replaced strictly with "중국" or other specific countries based on context.
   * 요약: The concise bullet points. 
-    - CRITICAL Country Abbreviation Rule: The country single-character abbreviation rule that applies to the title MUST be strictly applied to 요약 as well. When these countries appear (United States, China, South Korea, Japan, and North Korea) anywhere in the bullet (including prefixes/suffixes, e.g. "대미", "대중"), you MUST write them as their single-character Hanja abbreviations (美, 中, 韩, 日, 北) (e.g., '대중국' MUST become '대中', '미국 국가' MUST become '美 국가'). All other countries (e.g., 러시아, 프랑스, 독일) MUST be fully translated in their full Korean names and not abbreviated!
+    - SOURCE OF SUMMARY (STRICT): The content for the "요약:" section MUST come exclusively from the "대변인" section. You MUST select and pull out exactly three key sentences from the translated text of the "대변인" section, and summarize/rephrase them into the three summary bullet points in the "요약" section.
+    - CRITICAL Country Abbreviation Rule: The country single-character abbreviation rule that applies to the title MUST be strictly applied to 요약 as well. When these countries appear (United States, China, South Korea, Japan, and North Korea) anywhere in the bullet (including prefixes/suffixes, e.g. "대미", "대중"), you MUST write them as their single-character Hanja abbreviations (美, 中, 韩, 日, 北) (e.g., '대중국' MUST become '대중' or '대중' -> '대중' -> '대중' -> '대中', '미국 국가' MUST become '美 국가'). All other countries (e.g., 러시아, 프랑스, 독일) MUST be fully translated in their full Korean names and not abbreviated!
     - LIMIT LENGTH (CRITICAL): Every summary bullet point (- {subject}, {summary}음슴체) in the '요약:' section MUST NOT exceed a maximum length of 50 characters, including the bullet hyphen and any spaces or punctuations. Keep the points extremely short and compact.
     - No person names are permitted. Use comma (,) as topic marker and 음슴체 endings.
     - CRITICAL SUBJECT RULE: Whenever the subject of a summary bullet point would be "중국 외교부" or "공동 외교 부장" or "中 외교부" (or any other variations of Chinese department/ministry), you MUST change the subject strictly to "중국" or abbreviated "중국의 한자 약어인 中" (e.g. "중국 외교부, ~할 것임" -> "중국, ~할 것임" or abbreviated: "공동 외교부, ~할 것임" -> "중국, ~할 것임" or abbreviated: "중국, ~할 것임" or "중국의 한자 약어인 中, ~할 것임" -> "중국, ~할 것임" or "中, ~할 것임").

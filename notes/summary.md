@@ -51,6 +51,7 @@ When translating, strictly adhere to the following naming and structural rules:
 | 외교부 부장 | 외교부장 |
 | 지속적으로/끊임없이 | 지속해서 |
 | 견지 | 지지 |
+| 방중 | 중국 방문 (제목: 中 방문) |
 | 이번 | 상기 |
 | 문제 | 사안 |
 | 어려움 | 난관 |
@@ -220,7 +221,8 @@ When translating, strictly adhere to the following naming and structural rules:
 | 兩岸 | 양안(중국과 대만) |
 | 第十五届中国国际航空航天博览会新闻发布会 | 제15회 중국국제에어쇼 기자회견 |
 | 美军印太总部/美國印太司令部 | 인도태평양사령부(USINDOPACOM) |
-| 欧盟 | 유럽연합(EU) |
+| 欧盟 / 欧洲联盟 | 유럽연합(EU, European Union) |
+| 欧洲议会 / 欧盟委员会 | 유럽의회(EC, European Commission) |
 | 中國海警局 | 중국 해양경찰국 |
 | 二十国集团 | 주요 20개국(G20) |
 | 全球南方国家 | 글로벌 사우스(Global South) |
@@ -363,7 +365,8 @@ When translating, strictly adhere to the following naming and structural rules:
 | 77国集团 | G77(개발도상국들의 국제회의) |
 | 国际联合 | 국제연합(UN, United Nations) |
 | 联合国近东巴勒斯坦难民救济和工程处 | 유엔 팔레스타인 난민구호기구(UNRWA, The United Nations Relief and Works Agency for Palestine Refugees) |
-| 欧盟 | 유럽연합(EU, European Union) |
+| 欧盟 / 欧洲联盟 | 유럽연합(EU, European Union) |
+| 欧洲议会 / 欧盟委员会 | 유럽의회(EC, European Commission) |
 | 北大西洋公约组织(北约) | 북대서양 조약 기구(NATO, North Atlantic Treaty Organization) |
 | 非盟 | 아프리카연합(AU, African Union) |
 | 同舟共济 | 동주공제(同舟共济, 이해(利害)와 환란(患亂)을 같이하다) |

@@ -23,15 +23,25 @@ import {
   Zap
 } from 'lucide-react';
 import { translateNews, saveCorrection, TranslationSection, fetchAllLearnedPatterns, deleteLearnedPattern, LearnedPatternItem } from './services/translationService';
+import {
+  translateEnglishNews,
+  saveEnglishCorrection,
+  EnglishTranslationSection,
+  fetchAllEnglishLearnedPatterns,
+  deleteEnglishLearnedPattern,
+} from './services/englishTranslationService';
 import { cn } from './lib/utils';
 
 type Section = 'general' | 'briefing' | 'learning';
 
 export default function App() {
+  const [translationMode, setTranslationMode] = useState<'zh-ko' | 'en-ko'>('zh-ko');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
   const [activeSection, setActiveSection] = useState<Section>('general');
   const [sourceName, setSourceName] = useState('인터넷신화사');
   const [publisherName, setPublisherName] = useState('');
-  const [nationName, setNationName] = useState('중국');
+  const [nationName, setNationName] = useState('영국');
   const [chineseText, setChineseText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
   const [correctionText, setCorrectionText] = useState('');
@@ -48,14 +58,19 @@ export default function App() {
   const [learningSuccess, setLearningSuccess] = useState<string | null>(null);
   const [learningError, setLearningError] = useState<string | null>(null);
 
-  const [learnedPatterns, setLearnedPatterns] = useState<LearnedPatternItem[]>([]);
+  const [learnedPatterns, setLearnedPatterns] = useState<any[]>([]);
   const [isLoadingPatterns, setIsLoadingPatterns] = useState(false);
 
   const loadPatterns = async () => {
     setIsLoadingPatterns(true);
     try {
-      const data = await fetchAllLearnedPatterns();
-      setLearnedPatterns(data);
+      if (translationMode === 'zh-ko') {
+        const data = await fetchAllLearnedPatterns();
+        setLearnedPatterns(data);
+      } else {
+        const data = await fetchAllEnglishLearnedPatterns();
+        setLearnedPatterns(data);
+      }
     } catch (err) {
       console.error("Failed to load learned patterns:", err);
     } finally {
@@ -67,11 +82,34 @@ export default function App() {
     if (activeSection === 'learning') {
       loadPatterns();
     } else if (activeSection === 'general') {
-      setSourceName('인터넷신화사');
+      if (translationMode === 'zh-ko') {
+        setSourceName('인터넷신화사');
+      } else {
+        setSourceName('Reuters');
+      }
     } else if (activeSection === 'briefing') {
       setSourceName('중국외교부');
     }
-  }, [activeSection]);
+  }, [activeSection, translationMode]);
+
+  const handleModeChange = (mode: 'zh-ko' | 'en-ko') => {
+    setTranslationMode(mode);
+    setChineseText('');
+    setTranslatedText('');
+    setError(null);
+    setIsDropdownOpen(false);
+    
+    if (mode === 'en-ko') {
+      if (activeSection === 'briefing') {
+        setActiveSection('general');
+      }
+      setSourceName('Reuters');
+      setNationName('영국');
+    } else {
+      setSourceName('인터넷신화사');
+      setNationName('중국');
+    }
+  };
 
   const handleTranslate = async (section: TranslationSection) => {
     if (!chineseText.trim()) return;
@@ -79,7 +117,12 @@ export default function App() {
     setIsTranslating(true);
     setError(null);
     try {
-      const result = await translateNews(chineseText, section, sourceName, publisherName, nationName);
+      let result = '';
+      if (translationMode === 'zh-ko') {
+        result = await translateNews(chineseText, section, sourceName, publisherName, nationName);
+      } else {
+        result = await translateEnglishNews(chineseText, EnglishTranslationSection.GENERAL, sourceName, publisherName, nationName);
+      }
       setTranslatedText(result);
       
       setSourceForCorrection(chineseText);
@@ -105,12 +148,21 @@ export default function App() {
 
     setSaveStatus('saving');
     try {
-      await saveCorrection(
-        sourceForCorrection.trim(),
-        aiForCorrection.trim() || sourceForCorrection.trim(),
-        correctionText.trim(),
-        activeSection === 'briefing' ? TranslationSection.BRIEFING : TranslationSection.GENERAL
-      );
+      if (translationMode === 'zh-ko') {
+        await saveCorrection(
+          sourceForCorrection.trim(),
+          aiForCorrection.trim() || sourceForCorrection.trim(),
+          correctionText.trim(),
+          activeSection === 'briefing' ? TranslationSection.BRIEFING : TranslationSection.GENERAL
+        );
+      } else {
+        await saveEnglishCorrection(
+          sourceForCorrection.trim(),
+          aiForCorrection.trim() || sourceForCorrection.trim(),
+          correctionText.trim(),
+          EnglishTranslationSection.GENERAL
+        );
+      }
       
       setSaveStatus('complete');
       setLearningSuccess("Learning completed successfully.\nTranslation patterns and terminology have been added to the knowledge base.");
@@ -132,7 +184,11 @@ export default function App() {
 
   const handleDeletePattern = async (id: string) => {
     try {
-      await deleteLearnedPattern(id);
+      if (translationMode === 'zh-ko') {
+        await deleteLearnedPattern(id);
+      } else {
+        await deleteEnglishLearnedPattern(id);
+      }
       setLearnedPatterns(prev => prev.filter(p => p.id !== id));
     } catch (err) {
       console.error("Failed to delete learned pattern:", err);
@@ -206,8 +262,15 @@ export default function App() {
       <header className="h-16 border-b border-[#2D3139] bg-[#16191F] flex items-center justify-between px-6 shrink-0 z-50">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-4">
-            <div className="h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center gap-1.5 font-bold text-white shadow-lg shadow-blue-500/20 px-3 font-sans select-none">
-              <span className="text-xs font-semibold text-blue-100">中</span>
+            <div className={cn(
+              "h-8 rounded-lg flex items-center justify-center gap-1.5 font-bold text-white shadow-lg px-3 font-sans select-none bg-gradient-to-r transition-all",
+              translationMode === 'zh-ko' 
+                ? "from-blue-600 to-indigo-600 shadow-blue-500/20" 
+                : "from-emerald-600 to-teal-600 shadow-emerald-500/20"
+            )}>
+              <span className="text-xs font-semibold text-blue-100">
+                {translationMode === 'zh-ko' ? '中' : 'EN'}
+              </span>
               <span className="text-[10px] text-blue-200/80">➔</span>
               <span className="text-xs font-bold text-white">한</span>
             </div>
@@ -256,13 +319,61 @@ export default function App() {
 
         <nav className="flex gap-1 bg-[#0F1115] p-1 rounded-lg border border-[#2D3139]">
           <NavItem section="general" label="GENERAL" icon={FileText} />
-          <NavItem section="briefing" label="BRIEFING" icon={Mic2} />
+          {translationMode === 'zh-ko' && (
+            <NavItem section="briefing" label="BRIEFING" icon={Mic2} />
+          )}
           <NavItem section="learning" label="LEARNING" icon={GraduationCap} />
         </nav>
 
         <div className="flex items-center gap-6">
-          <div className="w-10 h-10 rounded-full bg-[#2D3139] border border-blue-500/30 flex items-center justify-center overflow-hidden">
-             <Settings2 className="w-5 h-5 text-slate-400" />
+          <div className="relative">
+            <button 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-10 h-10 rounded-full bg-[#2D3139] border border-blue-500/30 flex items-center justify-center overflow-hidden hover:border-blue-500/60 transition-all cursor-pointer relative select-none active:scale-95"
+            >
+               <Languages className="w-5 h-5 text-slate-400" />
+            </button>
+             {isDropdownOpen && (
+               <>
+                 {/* Backdrop to close list */}
+                 <div className="fixed inset-0 z-40 bg-transparent cursor-default" onClick={(e) => { e.stopPropagation(); setIsDropdownOpen(false); }} />
+                 <div className="absolute right-0 top-12 w-56 rounded-xl bg-[#16191F] border border-[#2D3139] shadow-2xl p-2 z-50 text-left flex flex-col gap-1 cursor-default">
+                   <div className="px-3 py-1.5 text-[9px] font-bold text-slate-500 uppercase tracking-widest border-b border-[#2D3139] mb-1">
+                     Select Translation Engine
+                   </div>
+                   <button
+                     onClick={() => handleModeChange('zh-ko')}
+                     className={cn(
+                       "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all text-left",
+                       translationMode === 'zh-ko' 
+                         ? "bg-[#2D3139] text-white" 
+                         : "text-slate-400 hover:bg-[#20242D] hover:text-white"
+                     )}
+                   >
+                     <div className="flex items-center gap-2">
+                       <span className="w-5 h-5 rounded bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold text-[10px]">중</span>
+                       <span>Chinese ➔ Korean</span>
+                     </div>
+                     {translationMode === 'zh-ko' && <Check className="w-3.5 h-3.5 text-blue-500" />}
+                   </button>
+                   <button
+                     onClick={() => handleModeChange('en-ko')}
+                     className={cn(
+                       "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all text-left",
+                       translationMode === 'en-ko' 
+                         ? "bg-emerald-600/20 text-emerald-400 font-bold border border-emerald-500/20" 
+                         : "text-slate-400 hover:bg-[#20242D] hover:text-white"
+                     )}
+                   >
+                     <div className="flex items-center gap-2">
+                       <span className="w-5 h-5 rounded bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-[10px]">EN</span>
+                       <span>English ➔ Korean</span>
+                     </div>
+                     {translationMode === 'en-ko' && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                   </button>
+                 </div>
+               </>
+             )}
           </div>
         </div>
       </header>
@@ -286,10 +397,13 @@ export default function App() {
                     <div className="flex items-center justify-between mb-6 shrink-0">
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
-                        <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">Source: Chinese (Standard)</span>
+                        <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">Source: {translationMode === 'zh-ko' ? 'Chinese (Standard)' : 'English (Standard)'}</span>
                       </div>
                       <button 
-                        onClick={() => setChineseText('')}
+                        onClick={() => {
+                          setChineseText('');
+                          setTranslatedText('');
+                        }}
                         className="text-[10px] font-bold text-slate-600 hover:text-red-400 transition-all uppercase flex items-center gap-1.5"
                       >
                         <Trash2 className="w-3 h-3" /> Clear
@@ -299,7 +413,7 @@ export default function App() {
                        <textarea
                         value={chineseText}
                         onChange={(e) => setChineseText(e.target.value)}
-                        placeholder="Type here..."
+                        placeholder={translationMode === 'zh-ko' ? "중국어 기사를 입력하세요..." : "Enter English news article..."}
                         className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-blue-500/50 resize-none text-xl leading-relaxed text-slate-300 placeholder:text-slate-800 font-serif caret-blue-500"
                       />
                       <button
@@ -415,13 +529,13 @@ export default function App() {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      <div className="bg-[#16191F] border border-[#2D3139] rounded-2xl p-8 space-y-6">
                         <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                           <FileText className="w-4 h-4 text-blue-500" /> 1. Original Chinese Text
+                           <FileText className="w-4 h-4 text-blue-500" /> 1. Original {translationMode === 'zh-ko' ? 'Chinese' : 'English'} Text
                         </h3>
                         <textarea 
                           value={sourceForCorrection}
                           onChange={(e) => setSourceForCorrection(e.target.value)}
                           disabled={saveStatus === 'saving'}
-                          placeholder="Type or paste the original Chinese text here..."
+                          placeholder={translationMode === 'zh-ko' ? "Type or paste the original Chinese text here..." : "Type or paste the original English text here..."}
                           className="w-full h-80 bg-[#0F1115] border border-[#2D3139] rounded-xl p-6 text-sm text-slate-300 focus:outline-none focus:border-blue-500 leading-relaxed font-news-agency resize-none disabled:opacity-50"
                         />
                      </div>
@@ -488,8 +602,8 @@ export default function App() {
                                {/* Left Side: Original Examples */}
                                <div className="lg:col-span-7 space-y-4">
                                  <div>
-                                   <span className="text-[9px] font-bold text-blue-500 uppercase tracking-widest">Source Chinese Example</span>
-                                   <p className="text-sm font-serif text-slate-300 mt-1 bg-[#0F1115] p-3 rounded-lg border border-[#20242D] leading-relaxed max-h-24 overflow-y-auto whitespace-pre-wrap">{pattern.chineseText}</p>
+                                   <span className="text-[9px] font-bold text-blue-500 uppercase tracking-widest">Source {translationMode === 'zh-ko' ? 'Chinese' : 'English'} Example</span>
+                                   <p className="text-sm font-serif text-slate-300 mt-1 bg-[#0F1115] p-3 rounded-lg border border-[#20242D] leading-relaxed max-h-24 overflow-y-auto whitespace-pre-wrap">{pattern.chineseText || pattern.englishText}</p>
                                  </div>
                                  <div>
                                    <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">User Corrected Translation</span>
