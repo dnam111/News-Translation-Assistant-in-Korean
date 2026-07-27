@@ -44,21 +44,6 @@ Whenever the following specified key terms appear in the source text, their very
 3. 四点主张 (4대 주장):
    - First Occurrence: '4대 주장(四点主张, 팔레스타인의 독립적인 건국과 팔레스타인-이스라엘 양측의 평화로운 공존을 유지해야 한다, 팔레스타인-이스라엘 間 대화만이 유일한 해결법이다,)'
    - Subsequent Occurrences: '4대 주장'
-4. 联合国 (유엔):
-   - First Occurrence: '국제연합(UN, United Nations)'
-   - Subsequent Occurrences: 'UN' (or '국제연합' without details)
-5. 全球南方 (글로벌 사우스):
-   - First Occurrence: '글로벌 사우스(Global South, 남반구나 북반구의 저위도에 위치한 아시아, 아프리카, 남아메리카의 개발도상국가)'
-   - Subsequent Occurrences: '글로벌 사우스'
-6. 一个中国 (하나의 중국):
-   - First Occurrence: '하나의 중국(一个中国，중국 대륙과 홍콩, 마카오, 대만은 나뉠 수 없는 하나이고 따라서 합법적인 중국의 정부는 오직 하나라는 원칙. 출처: 중국외교부)' 원칙
-   - Subsequent Occurrences: '하나의 중국' 원칙
-7. 欧洲议会 / 欧盟委员会 (유럽의회):
-   - First Occurrence: '유럽의회(EC, European Commission)'
-   - Subsequent Occurrences: 'EC'
-8. 欧盟 / 欧洲联盟 (유럽연합):
-   - First Occurrence: '유럽연합(EU, European Union)'
-   - Subsequent Occurrences: 'EU'
 
 ## STRICT PROHIBITION of Honorific Endings & Style Ends
 - Do NOT use honorific sentences ending in "~했습니다", "~체", "~습니까", "~습니다" or similar honorific verb styles.
@@ -68,6 +53,9 @@ Whenever the following specified key terms appear in the source text, their very
 Before outputting your final translation, you MUST perform a sentence-by-sentence check against ALL "Sentence Rules" listed below.
 If a sentence violates any rule, you MUST split it or rephrase it until it complies.
 Failure to follow these rules is a critical failure.
+
+## Nation / Source / Publisher placeholders
+Every request's user turn will contain a "TRANSLATION METADATA" block giving the real Nation, Source, and Publisher Name (or stating there is none) for that request. Wherever this instruction set or the Output Structure below shows "(Nation)", "(Source)", or "(Publisher Name)", you MUST substitute the actual values from that block. If Publisher Name is stated as none/empty, omit that line entirely from your output.
 
 ## Output Structure
 The output must strictly follow this structure:
@@ -100,7 +88,7 @@ const GENERAL_NEWS_INSTRUCTIONS = `
    - Initial Date Stamp: Every translation article must begin with the date at the very start of the first sentence. Format: 'YY. M. D일, (e.g., '26. 5. 25일,).
    - Relative Time Translation: Literal translations like "올해" or "오늘" are strictly prohibited. You must dynamically calculate and write the specific numbers based on the source context:
      * 今年 -> Specific numeric year (e.g., '26년).
-     * 今天 -> Specific numeric date in metadata format (e.g., '26. 5. 25일).
+     * 今天 -> Specific numeric date in metadata format (e.g., '26. 7. 27일).
    - Time of Day: If a text mentions morning, lunch, or afternoon, append local time notation immediately after. Format: 오후(현지시각), 오전(현지시각).
    - Publisher Line: Always place the publisher information line immediately below the metadata line.
    - Contextual Deictics: Use the word "상기" to translate "this/that" within official briefing contexts.
@@ -111,14 +99,14 @@ const GENERAL_NEWS_INSTRUCTIONS = `
    - No Country Abbreviations: Never use single-character country abbreviations (e.g., 中) in the body text. Use full, unabbreviated country names.
    - Heads of State: Translate 两国元首 dynamically based on the exact active nations in the context. Apply the Country Sequence Rule (e.g., 미국-중국 양국 정상). Never default blindly to US-China.
    - Weapon Naming: "Country + missile name (English) + missile type + 미사일" (e.g., 미국 AGM-158 JASSM 순항 미사일).
-   - Company Naming: "Country + company name (English) + 社" (e.g., 미국 Lockheed Martin社).
+   - Company Naming: "Country + 『company name (English)』 + 社" (e.g., 미국 『록히드마틴(Lockheed Martin)』社).
    - Regulation Formatting: Treat 『』 for regulations, ordinances, treaties, and media entities.
 3. Individual Naming & Title Structures:
    - Official Title (Strict Single-Role Limit): You must pick exactly one representative occupation per individual. 
      * Prohibited: Combining multiple titles, mentioning dual roles (겸직), or using the connective word "겸" anywhere in the translation. Discard secondary occupations completely.
      * Priority Rule: If an individual holds multiple roles, prioritize the foreign affairs role (e.g., 외교장관, 외무장관, 외교부장) over any executive roles (e.g., 총리, 부총리). Use Search to verify if ambiguous.
    - Naming Presentation Flow:
-     * First Mention: 이름(원어명) 국적 직책 (e.g., 푸충(傅聪) 중국 대사). Use Chinese Hanja characters in the parenthesis for individuals from South Korea, North Korea, Japan, China, Taiwan, and Hong Kong (e.g. 푸충(傅聪) 중국 대사).
+     * First Mention: 이름(원어명) 국적 직책 (e.g., 푸충(傅聪) UN 주재 중국 대사). Use Chinese Hanja characters in the parenthesis for individuals from South Korea, North Korea, Japan, China, Taiwan, and Hong Kong (e.g. 푸충(傅聪) UN 주재 중국 대사).
      * For individuals/people from any OTHER countries than China, Japan, South Korea, Taiwan, Hong Kong, and North Korea, you MUST put the English name inside the parentheses. Example: 미국 바이든 -> 조 바이든(Joe Biden) 미국 대통령.
      * Subsequent Mentions: 이름 직책. Do not use pronouns like "그" or "그녀". Always explicitly repeat [Name] [Title].
    - Diplomatic Title Structures: For titles structured as 'Country/Org + 驻 + Rank', follow this exact syntax blueprint:
@@ -131,16 +119,7 @@ const GENERAL_NEWS_INSTRUCTIONS = `
      * The marker '~며,' cannot stand alone if '~고' is missing from that sentence sequence. If this structure is broken, split the text into two distinct sentences.
      * Whenever '며' (or '며,') appears as a conjunction/connective ending in the translation, it MUST always be immediately followed by a comma (e.g. "~며,").
      * You are STRICTLY prohibited from placing a comma after '고' in all conjunction clauses. It MUST always be written as "~고" without any trailing comma (e.g. do NOT write "~고,").
-   - Strict Vocabulary Bans: Under no circumstances use the word '측', the Korean character '들', the word '방중', or the word '이번' anywhere in any translation (including headlines, body, and summaries) under any circumstances. This is an absolute, zero-tolerance global ban!
-     * Replace '측' entirely with the subject's explicit name or title (e.g. replace '중국측' with '중국', '미국측' with '미국', '양측' with '양국').
-     * Rephrase or omit '들' entirely by using singular nouns or alternative phrasing.
-     * You are strictly prohibited from using the word '방중' in any part of the translation or briefing under any circumstances. You MUST use '중국 방문' in the body text (본문), questions (질문:), and spokesperson comments (대변인:), and '중국 방문' or '中 방문' in the title/headline and summaries (요약:). Follow this strictly. Any Chinese term for visiting China (e.g. 访华, 访问) must be translated strictly using these mappings (never use '방중').
-
-
-
-     * You are strictly prohibited from using the word '이번' (or translating 这次, 这一, 本次, 该, etc. into '이번' or similar words) anywhere in the translation (including headlines, body, questions (질문:), spokesperson comments (대변인:), and summaries/briefings (요약:)). You MUST always use '상기' instead.
-     * Never use the word '덧붙였다'.
-     * (Exception: The specific 4대 주장 string containing '양측' is allowed to retain '측', but '들', '방중', and '이번' are strictly prohibited everywhere).
+   - Strict Vocabulary Bans: Under no circumstances use the word '측', the Korean character '들', the word '방중', or the word '이번' anywhere in any translation (including headlines, body, and summaries) under any circumstances. This is an absolute, zero-tolerance global ban! (Rules and mappings for these are fully specified above and are not repeated here.)
 5. Quotations & Spoken Content Formula:
    - Direct Speech Validation: Use quotation marks (" ") only for direct speech. If no one is speaking, quotation marks are strictly banned.
    - Quote Merging: If an individual speaks multiple consecutive sentences in the source text, merge them into a single continuous string inside one set of quotation marks.
@@ -161,505 +140,357 @@ const GENERAL_NEWS_INSTRUCTIONS = `
    - Location Format: 
      * For cities from China, Japan, South Korea, Taiwan, Hong Kong, and North Korea, format as Country + City(Hanja)市 (e.g., 중국 상하이(上海)市).
      * For cities from any OTHER countries than China, Japan, South Korea, Taiwan, Hong Kong, and North Korea, you MUST put the English name inside the parentheses. Example: 미국 뉴욕(New York)市, 프랑스 파리(Paris)市.
-   - Glossary Integration: If a word matches an entry in your provided Terminology Glossary, use the target Korean phrase and append the glossary's contextual description inside parentheses.
-     * Example: ‘하나의 중국(空间, 중국 대륙과 홍콩, 마카오, 대만은 나뉠 수 없는 하나이고 따라서 합법적인 중국의 정부는 오직 하나라는 원칙)’ 원칙
-   - Dynamic Matching: If a translated Korean phrase appears on the left side of your provided glossary, replace it immediately with the preferred phrase on the right side of the glossary.
+   - Glossary Integration: A "Relevant Glossary Matches" list will be supplied in the user turn, containing only the glossary entries relevant to the current source text (drawn from the full glossary this app maintains). If a word matches an entry there, use the target Korean phrase and append any parenthetical contextual description exactly as given.
+     * Example: ‘하나의 중국(一个中国，중국 대륙과 홍콩, 마카오, 대만은 나뉠 수 없는 하나이고 따라서 합법적인 중국의 정부는 오직 하나라는 원칙. 출처: 중국외교부)’ 원칙
+   - Dynamic Matching: If a translated Korean phrase appears on the left side of a supplied glossary entry, replace it immediately with the preferred phrase on the right side of that entry.
+`;
 
-## Terminology Glossary (STRICT MAPPING)
+/* ----------------------------------------------------------------------------
+ * FULL TERMINOLOGY GLOSSARY
+ * ----------------------------------------------------------------------------
+ * This is the exact same glossary that used to be embedded directly inside
+ * GENERAL_NEWS_INSTRUCTIONS. Paste your full, unmodified glossary block here
+ * (everything that was under "## Terminology Glossary (STRICT MAPPING)"),
+ * one "- 중국어/기존항목 : 한국어" entry per line, exactly as you already have
+ * it today. Nothing about the entries themselves needs to change - only their
+ * location moved, so they can be filtered per-request instead of being sent
+ * in full on every single call. getRelevantGlossary() below parses this with
+ * a simple line-based "- key : value" format, and also understands "/" as
+ * separating alternate source terms on the key side (e.g. "欧盟 / 欧洲联盟").
+ * ------------------------------------------------------------------------- */
+const FULL_GLOSSARY_TEXT = `
 - 동의: 합의
 - 칭찬하다/감사의 뜻을 표하다 : 높게 표하는 바이다/높게 평가하다
 - 회담 진행 : 회담을 실시했다 (제목: 회동)
-- 고도로 주의 : 매우 우려
-- 인민 : 국민 (대만: 주민)
-- 소원 : 염원/개인적 바람
-- 지역 : 역내
-- 올라가다/도약 : 격상
-- 국방부 장관 : 국방장관
-- 외교부 부장 : 외교부장
-- 지속적으로 : 지속해서
-- 끊임없이 : 지속해서
-- 세계 : 국제사회 (Always map '세계' to '국제사회' in the destination translation based on context)
-- 견지 : 지지
-- 방중 : 중국 방문 (제목: 中 방문)
-- 이번 : 상기
-- 사안/문제 : 사안
-- 어려움 : 난관
-- 나아가며 : 전진하며
-- 모든 부정적인 것 : 우려를 표하다
-- 통화 진행 : 전화 회담 실시
-- 무시 : 왜곡
-- 파트너 : 동반자
-- ~한다(informal) : ~한 바이다
-- 하고싶다 : 희망한다
-- ~에 불구하고 : 막론하고
-- ~것이다 : ~예정이다
-- 새로운 : 신형
-- 큰 : 보다 높은 수준의
-- 마지막 : 최종
-- ~때문 : ~에 비롯함
-- 다른 국가 : 타국
-- 전방 : 전진
-- ~에 위치 : 소재
-- 생산률 감소 : 하향 조정
-- 고통 : 난제
-- 개방 : 재개
-- 안전 : 안보
-- 보호 : 수호
-- 하였고 : 했고
-- 이 : 상기
-- 이런: 상기
-- 유엔: '국제연합(UN, United Nations)' 
-- 안전보장이사회: '국제연합 안전보장이사회(UNSC, Untied Nations Security Council)'
-- 할수있기를 : 하길
-- 共识: 공동인식
-- 글로벌 사우스: ‘글로벌 사우스(Global South, 남반구나 북반구의 저위도에 위치한 아시아, 아프리카, 남아메리카의 개발도상국가)’
-- 신(新)육해무역회랑 : 신(新)육해무역회랑(Land-Sea Trade Corridor)
-- 十五五 : 제15차 5개년 계획
-- '12ㆍ5' 규획 : '12ㆍ5' 규획(제12차 경제개발 5개년 계획, ’11∼’15년)
-- 13ㆍ5 계획 : 13ㆍ5 계획(제13차 경제개발 5개년 계획, ’16∼’20년)
-- 제14차 5개년 : 제14차 5개년(2021∼2025년) 계획
-- 7년행동계획 : 7년행동계획(2019-2025년 중국 유전ㆍ가스전 탐사 및 생산 발전 계획)
-- 혁신구동발전전략 : 혁신구동발전전략(혁신을 통한 발전 전략)
-- 동북진흥 : 동북진흥(동북3省 공업기지 혁신 전략)
-- 중국제조 2025 : 중국제조 2025(산업고도화 전략)
-- 두 개의 백년 : 두 개의 백년(중국 공산당 창당 100주년/건국 100주년 목표)
-- 첫 번째 백년 : 첫 번째 백년(공산당 창당 100주년 2021년에 전면적 샤오캉)
-- 두 번째 백년 : 두 번째 백년(건국 100주년 2049년에 사회주의 현대화 국가 건설)
-- 주체기능구 : 주체기능구(지역별 개발/보존 공간 계획)
-- 남수북조 : 남수북조(남부 담수를 북부로 공급)
-- 서부개발 : 서부개발(서부 균형발전 전략)
-- 서기동수 : 서기동수(서부 천연가스를 동부로 운송)
-- 당의 건설 : 당의 건설(윤리 정책 및 조직 강화)
-- 삼보주 : 삼보주(현대화 발전전략)
-- 루반공방 : 루반공방(직업교육센터)
-- 全方位战略伙伴关系/全面战略伙伴关系 : 전면적인 전략적 동반자 관계
-- 中华人民共和国成立 : 중화인민공화국 수립
-- 双重标准 : 이중잣대
-- 政治互信 : 정치적 상호 신뢰
-- 互补 : 상호보완적
-- 一贯 : 시종일관
-- 多边机制 : 다자간 플랫폼
-- 和平与安全 : 평화ㆍ안보
-- 切实 : 착실
-- 深入战略沟通 : 심도 있는 전략적 소통
-- 广泛共识 : 광범위한 공동 인식
-- 深厚民意基础 : 두터운 민의를 기반으로 한다
-- 落实 : 착실히 이행
-- 命运共同体 : 운명공동체
-- 领土完整 : 영토 완전성
-- 铁杆友谊 : 돈독한 관계/우의
-- 取得积极进展 : 긍정적 진전을 이뤘다.
-- 单方面免签 : 일방적 비자 면제 정책
-- 富有成果 : 생산적인
-- 一系列 : 일련의
-- 自贸协定升级版谈判 : 자유무역 협정 업그레이드 협상
-- 保护主义 : 보호주의
-- 逆全球化 : 반세계화
-- 中国共产党二十届三中全会 : 중국공산당 제20기 중앙위원회 제3차 전체회의
-- 共同协调员 : 조정국의 일원
-- 健康稳定发展 : 정상적ㆍ안정적 발전
-- 确保 : 확고히 보장
-- 高度赞赏 : 높이 평가
-- 矛盾 : 갈등
-- 密切 : 긴밀
-- 友好年 : 우정의 해
-- 对话合作机制 : 대화 협력 메커니즘
-- 重启 : 재개
-- 健康稳定 : 건전한
-- 共同 : 함께
-- 开展建设性沟通 : 건설적인 소통을 진행
-- 加沙冲突 : 가자지구 역내 충돌
-- 保护贸易主义 : 보호무역주의
-- 把握先机 : 기회 포착
-- 全力推动 : 전적으로 추진
-- 协调配合 : 조율ㆍ협력
-- 不断迈上新台阶 : 지속해서 새로운 단계로 격상
-- 挑衅 : 도발 감행
-- 不折不扣 : 영락없는
-- 虚假叙事 : 허위 서사
-- 敦促 : 촉구
-- 死路一条 : 파멸
-- 必将自食恶果 : 자업자득을 면하지 못할 것
-- 台独 : 대만 독립운동(台独)
-- 引火烧身 : 스스로 화를 불러 일으키는 것
-- 再次 : 재차
-- 通话 : 전화 회담
-- 近日 : 조만간
-- 主席国 : 의장국
-- 发送贺电 : 축전 전달
-- 传统 : 기존의 관례/관례적
-- 致力/不懈努力 : 총력을 기울일 것
-- 提供了有力支撐 : 기반을 다졌다
-- 志同道合 : 뜻을 같이하다
-- 消除 : 척결
-- 打击 : 타격
-- 挂钩 : 연관시키다
-- 地缘政治空前紧张 : 유례없는 지정학적 긴장
-- 惨无人道 : 극악무도
-- 反恐 : 대테러
-- 百年未有 : 전례 없는
-- 此起彼伏 : 지속적으로 발생하는
-- 协调作用 : 조정 역할
-- 从源头上铲除 : 근절
-- 赋能增效 : 동력 부여와 효율 개선
-- 帮助 : 지원
-- 交付 : 납품/보급
-- 双赢 : 양측 모두에 유리한
-- 询答 : 질의응답
-- 韧性 : 복원력/회복력
-- 国防厂商 : 방산업체
-- 产业升级 : 산업 고도화
-- 讨论热烈 : 열띤 토론
-- 高科技 : 첨단
-- 具备 : 보유
-- 国防产业 : 방위 산업
-- 注入了新动力 : 새로운 동력을 부여했다
-- 最高领导人 : 최고지도자
-- 本币结算 : 현지 통화 결제
-- 全球治理 : 글로벌 거버넌스
-- 同志加兄弟 : 동반자이자 형제
-- 传统友谊 : 전통적 우의
-- 胡志明陵 : 호찌민 묘소
-- 敬献花圈 : 헌화
-- 头等优先 : 최우선순위
-- 拓展...合作 : 협력 확대
-- 尽快 : 조속히
-- 军事能力 : 군사적 역량
-- 涉及 : 포괄하고 있다
-- 发表言论 : 발언
-- 避免 : 삼가야 한다
-- 认知 : 인식도/인지도
-- 有关方面 : 당사자
-- 逐步 : 점진적
-- 未来 : 향후
-- 变革期 : 변혁기
-- 紧跟 : 발맞춰
-- 把握 : 붙잡다
-- 崛起 : 부상
-- 自强 : 발전
-- 高质量 : 수준 높은
-- 面临 : 직면
-- 乌克兰危机 : 러시아-우크라이나 전쟁
-- 创新 : 혁신
-- 人口众多 : 방대한 인구
-- 良好典范 : 모범적인 본보기
-- 好伙伴 : 훌륭한 동반자
-- 以巴冲突 : 이스라엘-하마스 전쟁
-- 兩岸 : 양안(중국과 대만)
-- 第十五届中国国际航空航天博览会新闻发布会 : 제15회 중국국제에어쇼 기자회견
-- 美军印太总部/美國印太司令部 : 인도태평양사령부(USINDOPACOM)
-- 欧盟 / 欧洲联盟 : 유럽연합(EU, European Union)
-- 欧洲议会 / 欧盟委员会 : 유럽의회(EC, European Commission)
-- 中國海警局 : 중국 해양경찰국
-- 二十国集团 : 주요 20개국(G20)
-- 联合国全球反恐战略 : 유엔 세계 대테러전략(UNGCTS)
-- 第三届“一带一路”国际合作高峰论坛 : 제3회 일대일로 국제협력 정상포럼
-- 长臂管辖 : 확대 관할
-- 蓝色伙伴关系 : 블루 파트너십(Blue Partnership)
-- 孔子学院 : 공자학원
-- 倾销 : 덤핑(Dumping, 채산을 무시하고 싼 가격으로 상품을 투매하는 일)
-- 反倾销 : 반덤핑
-- 反补贴 : 상계관세
-- 强硬两手 : 강온양면전술
-- 经济转型 : 경제 패러다임 전환
-- 一促两稳 : 일촉양안(一促两稳, 소비 촉진과 대외무역 및 외자 안정)
-- 三服务 : 3복무(三服务, 지도자ㆍ서민ㆍ민중에 복무하다)
-- 三網一化 : 삼망일화(三網一化, 고속철ㆍ고속도로ㆍ지역항공 건설 및 인프라 산업화)
-- 三去一降一补 : 3거1강1보(三去一降一补, 부동산 재고 해소ㆍ과잉생산설비 해소ㆍ금융리스크 최소화ㆍ비용절감ㆍ단점보완)
-- 兩廊一圈 : 양랑일권(兩廊一圈, 중국-베트남 間 협력발전 중 두 개의 경제벨트와 하나의 경제권을 뜻함)
-- 四个着力 : 4개 착력(四个着力, 체제 시스템 완비, 구조 조정 추진, 혁신 창업 격려, 민생 보장 및 개선)
-- 五险一金 : 오험일금(오험일금, 다섯 개의 보험(양로보험, 실업보험, 공상보험, 의료보험, 생육보험)과 한 개의 기금(주택공적금))
-- 简政放权 : 간정방권(간정방권, 정부와 기업의 기구를 간소화하고 권한을 하부 기관에 이양하다)
-- 国内生产总值 : 국내총생산(GDP)
-- 北黄海经济带 : 북황해경제벨트
-- 长江经济带 : 장강 경제벨트(长江经济带)
-- 粤港澳大湾区 : 웨강아오대만구(粤港澳大湾区)
-- 专属经济区 : 배타적 경제수역(EEZ)
-- 硬联通 : 경연통(硬联通, 도로, 철도, 항구 등 기초 시설 연결)
-- 软联通 : 연연통(软联通, 규정, 제도 표준화 연결)
-- 心联通 : 심연통(心联通, 마음 연결)
-- 两高行业 : 양고업계(높은 에너지 소비율과 오염도)
-- 两个毫不动摇 : 두 개의 요지부동
-- 供给侧结构性改革 : 공급측구성개혁
-- 散乱污企业 : 산롼우기업(산업정책 미부합, 오염방지조치 미비 기업)
-- 八大行动 : 팔대행동
-- 五个更加注重 : 5개 추가집중사항
-- 飞地经济 : 영지경제(enclave economy)
-- 破七 : 포치(달러당 7위안 돌파)
-- 新东北现象 : 신동북현상
-- 兴边富民 : 흥변부민(변방지역 진흥 및 변방주민 부유화)
-- 絲路基金 : 실크로드펀드
-- 去库存、去产能、去杠杆 : 부동산 재고/과잉생산설비 해소ㆍ금융리스크 최소화
-- 人民币合格境外机构投资者 : 위안화 적격외국인투자자(RQFII)
-- 工业4.0 : 인더스트리 4.0
-- 約談 : 웨탄(조사 및 교육)
-- 大宗商品 : 대량 상품
-- 集疏运 : 집소운(화물 모으고 운반)
-- 最后一公里 : 라스트 킬로미터(최종 배송단계)
-- 政产学研用 : 정산학연용(정부, 기업, 대학, 연구소 결합)
-- 创业板 : 차스닥(중국판 나스닥)
-- 实体清单 : 엔티티 리스트(블랙리스트)
-- 碳达峰、碳中和 : 30 탄소피크, 60 탄소중립
-- 两个确立 : 2개 확립
-- 六个更 : 6가지 보다
-- 科创板 : 과학혁신판(중국판 NASDAQ)
-- 产业集群 : 산업 클러스터(기업과 기관 시너지 산업단지)
-- 冷发射 : 콜드런치(탄도탄 냉발사체계)
-- 舷号 : 선체 번호
-- 中共中央军事委员会 : 중국 공산당 중앙군사위원회(中共中央军事委员会, 이하 중앙군사위)
-- 232措施 : 무역확장법 232조(수입제한법)
-- 301调查 : 통상법 301조 / 슈퍼 301조(불공정 무역 보복관세 근거)
-- 相控阵雷达 : 페이즈드 어레이 레이더(빔 각도 변환 레이더)
-- 网格 : 인터넷 대형 격자(전면 연결/유통망)
-- 亚马尔液化气 : 야말(Yamal) 액화가스
-- 导航电文 : 항법 메시지
-- 大农业 : 대농업(농ㆍ임ㆍ목축ㆍ어업 포함)
-- 接口控制文件 : 인터페이스 통제문서(ICD)
-- 硬着陆 : 경착륙(급격한 경기 냉각)
-- 软着陆 : 연착륙(점진적 경기 침체/성장률 하향)
-- 码头 : 선착장
-- 鸭式布局 : 커나드 항공기
-- 分导式多弹头 : 다탄두각개유도미사일(MIRV)
-- GPS : 범지구위성항법시스템(GNSS)
-- 完全的、可验证的、不可逆的弃核 : 완전하고 검증가능하며 불가역적인 핵폐기(CVID)
-- 非色散位移单模光纤 : 비분산형 단일모듈 광섬유
-- 导弹及其技术控制制度 : 미사일기술통제체제(MTCliR)
-- 水雷反制 : 기뢰대항책
-- 部署水雷/布雷 : 기뢰 부설
-- 港区扫雷舰 : 소형 소해정
-- 射控雷达 : 사격통제 레이더
-- 沉底雷 : 침저기뢰
-- 漂雷 : 부유기뢰
-- 上升水雷 : 부상기뢰
-- 潜射自走雷 : 잠수함 자주기뢰
-- 遥控雷 : 원격기뢰
-- 载台 : 기뢰부설 플랫폼
-- 布雷轨道 : 기뢰망
-- 水雷作战 : 기뢰전
-- 火箭上升水雷 : 로켓부상기뢰
-- 外挂布雷舱 : 후크형 기뢰부설실
-- 布雷封锁 : 기뢰 부설을 통한 봉쇄/봉쇄
-- 扫雷舰 : 소해정
-- 潜猎舰 : 구잠정
-- 快攻潜舰 : 속공 잠수함
-- 空投水雷 : 공중 투하 기뢰
-- 战场 : 전선
-- 验证飞行器 : 실험비행체
-- 可重复使用 : 재사용 가능
-- 控制信号 : 제어 신호
-- 网络电磁空间 : 사이버 공간
-- 梯队 sistema : 에셜론(Echelon)
-- 信息欺骗 : 정보 기만
-- 对抗 : 유동적 대항/대항전
-- 网络基因组 : 사이버 게놈(cyber genome)
-- 网络化指挥系统 : 네트워크화 지휘시스템
-- 网络接管 : 네트워크 인터셉트
-- 网电基因 : 사이버 유전자(Cyber gene)
-- 物联网 : 사물 인터넷(IoT)
-- 作战者 : 작전 수행 요원
-- 蜜钥 : 비밀키(Secret Key)
-- 天基信息系统 : 우주 정보 시스템
-- 影响分析 : 영향력 분석
-- 军用卫星 : 군사위성
-- 民用卫星 : 민간위성
-- 空间分辨率 : 공간 해상도(Spatial Resolution)
-- 超光谱成像技术 : 초분광 영상기술
-- 时间分辨率 : 시간 해상도
-- 光谱分辨率 : 분광 해상도
-- 侦察卫星 : 정찰위성
-- 成像侦察卫星 : 영상정찰위성
-- 导弹预警卫星 : 미사일탐지위성
-- 电子侦察卫星 : 전자정찰위성
-- (信号)屏蔽 : 차폐
-- 光学成像技术 : 광학 영상기술
-- 全球信息栅格 : 범세계 정보 격자(GIG)
-- 谱段 : 분광대
-- 转型信卫星 : 변형 통신위성
-- 雷达覆盖区 : 레이더 포착범위
-- 星间链路 : 위성링크
-- 莫尔纹 : 모이레(Membrane Optical Imager 프로젝트)
-- 天基红外系统 : 우주 적외선 시스템(SBIRS)
-- 多光谱成像技术 : 다중분광영상기술
-- 数字信道机 : 디지털 트랜스시버
-- 先进极高频系统 : 고등극고주파 시스템(AEHF)
-- 动中通 : SOTM(움직이며 통신)
-- 极高频 : 극고주파(EHF)
-- 特高频 : 극초단파(UHF)
-- 空间定向性 : 공간 지향성
-- 宽带码分多址 : 광대역 코드분활 다중접속(WCDMA)
-- 误码率 : 오류율
-- 载波 : 반송파
-- 空间互联网通信 system : 우주 인터넷 통신 시스템
-- 信息包 : 패킷(Packet)
-- 星载路由器 : 위성 탑재 인터넷 공유기
-- 频段 : 채널/주파수대
-- 全球定位系统 GPS : 지구위치시스템
-- 空间段, 地面控制段 : 우주 부분, 지상 제어 부분
-- 地面段 : 지상국
-- 卫星星座 : 군집 위성
-- 下一代地面控制段(OCX) : 차세대 지상 제어 부분
-- 授时 : 시보(Time Service)
-- 顶层设计 : 톱다운 설계
-- 综合电子信息系统 : 통합 전자정보처리시스템
-- 武器系统 : 무기 체계
-- 全球指挥控制系统 : 범세계 지휘통제체계
-- 记载通信节点技术 : 전장항공 통신 노드(BACN)
-- 时敏目标 : 시한성 긴급표적
-- 网络中心战 : 네트워크중심전
-- 多输入/多输出雷达 : 다중입출력(MIMO) 레이더
-- 频谱 : 주파수 스펙트럼
-- 认识计算 : 지각 컴퓨팅
-- 光电探测器 : 광 검출기
-- 孔径积 : 개구면
-- 卫星分辨率 : 위성 해상도
-- 穿透力 : 투과력
-- Universal Operational Picture : 공통작전 상황도
-- Cognitive Computer : 인지 컴퓨터
-- Electomagnetic Spectrum : 전자 스펙트럼
-- 上行链路 : 업링크
-- 下行链路 : 다운링크
-- 不可克隆 : 복제 불가능성
-- 掠海导弹 : 시스키밍 미사일
-- 二维多视角布局 : 다시각적 2차원 배열
-- 脉冲数 : 펄스 수
-- 多普勒分辨率 : 펄스도플러
-- 多基地MIMO雷达 : 멀티 스태틱 레이더
-- 宽带MIMO成像雷达 : 광대역 MIMO 영상레이다
-- 空，时，能管理技术 : 공간/시간/에너지 관리 기술
-- 运动平台 : 운동구현장치
-- 美国国防高级研究计划局 : 미국 국방 첨단과학기술 연구소(DARPA)
-- 列装 : 전력화된
-- 数字有源相控阵雷达 : 디지털 능동형 위상 배열 레이더
-- 前缘 : 리딩 엣지(Leading Edge)
-- 后缘 : 트레일링 엣지(Trailing Edge)
-- 永磁直线同步电机 : 영구자석형 동기발전기(PMSG)
-- 电子战 : 전자전(Electronic Warfare)
-- 综合电力系统 : 통합 전기추진시스템
-- 电磁弹射器 : 전자기식 사출장치(EMALS)
-- 蒸汽弹射器 : 증기식 캐터필트
-- 阻拦装置 : 강제착륙장치(AAG)
-- 应力 : 응력(Stress)
-- 联合精确进场着舰／陆引导系统 : 합동 정밀접근 및 착륙/착선 체계(JPALS)
-- 可见光传感器 : 가시광 센서
-- 万向架 : 짐벌(Gimbal)
-- 模块化分离式卫星 : 분리모듈우주선
-- 精确制导武器 : 정밀유도병기(PGM)
-- 金属丝 : 채프(Chaff)
-- 进口替代补贴 : 수입 대체보조금
-- 国民待遇原则/国民待遇义务 : 내국민대우의 원칙
-- 普级, 军级, 特军级, 超特军级, 宇航级 : JANS급
-- 亚米级 : 서브미터급
-- 电子对抗 : 전자 방해(ECM)
-- 战斗机挂架 : 전투기 파일런
-- 一站双控 : 일참쌍공(한 지휘소에서 2대 무인기 동시 조종)
-- 偵打一體 : 정찰·공격 일체화(또는 무장 탑재 무인정찰기)
-- 系列 : 계열
-- 在轨标校 : 온 오빗 캘리브레이션(궤도 자세 교정)
-- 集團 및 集團公司 : 집단회사
-- 交换节点 : 교환 노드
-- 渦槳發動機 : 터보프롭 엔진
-- 活塞式 : 피스톤
-- 超視距打擊 : 비가시권 공격(BVR)
-- 中高度長航 : 중고도 장기체공(MALE)
-- 高空長航 : 고고도 장기체공(HALE)
-- 反介入/區域拒止 : 반접근/지역거부(A2AD)
-- 关键信息基础设施 : 핵심 정보 인프라 시설
-- 环绕器 : 궤도 선회선
-- 滑轨 : 레일
-- 着巡组合体 : 로버(탐사차)
-- 全球海洋支点 : 해양강국 비전
-- 雅万高铁 : 인도네시아 자카르타-반둥 고속철도
-- 春苗行动 : 춘먀오 행동(해외 거주민 백신지원)
-- 全球互联互通倡议 : 세계적으로 연결된 유럽(Global Gateway)
-- 南海战略态势感知 : 남중국해전략태세감지계획(SCSPI)
-- 世卫组织 : 세계보건기구(WHO)
-- 世卫大会 : 세계보건총회(WHA)
-- 东伊运 : 동투르키스탄이슬람운동
-- 全面与进步跨太平洋伙伴关系协定 : 포괄적ㆍ점진적 환태평양경제동반자협정(CPTPP)
-- 全球发展倡议 : 글로벌 발전/안보/문명 이니셔티브
-- 글로벌 게이트웨이 : 유럽 역외 인프라 건설투자 계획
-- 反送中/修例风波 : 홍콩 반송중 운동
-- 共同但有区别的责任 : 공동의 차별화된 책임(CBDR)
-- 中俄关于相互通报发射弹道导弹 and 航天运载火箭의协定 : 중-러 탄도미사일/우주로켓 발사 통보 합의
-- 台湾中央流行疫情指挥中心 : 대만 중앙유행전염병지휘센터(CECC)
-- 三农 : 삼농(농업ㆍ농촌ㆍ농민)
-- 全过程人民民主 : 전 과정 인민민주
-- 普惠金融 : 인클루시브 금융(Inclusive Finance)
-- 中国第13기 전국인민정치협상회의 5차 회의 : 제13기 전국정협 5차 회의
-- 五眼联盟 : 파이브 아이즈(Five Eyes)
-- 四边机制 : 쿼드(Quad, 4개국 안보 협의체)
-- 三边安全伙伴关系 : 오커스(AUKUS, 3개국 안보 동맹)
-- 《蓝色太平洋2050战略》 : 청 태평양 2050 전략
-- 四个充分尊重 : 4개 존중(소수민족 다양성 존중 정책)
-- 中国国务院联防联控机制 : 중국 국무원 합동방역기구
-- 动态清零 : 제로 코로나
-- 管理控制区域 : 관리통제구역
-- 互利共赢 : 호혜공영(협력을 통한 이익 추구)
-- 合作共赢 : 합작공영(협력을 통한 모두의 발전)
-- 绿色转型 : 그린 트렌스포메이션(친환경 경영 전환)
-- 基础加强剂 : 기초접종(Additional Dose)
-- 四不一无意 : 사불일무의(中-美 관계)
-- 两国方案 : 양국 방안(이스라엘-팔레스타인 분쟁)
-- 八大共同行动 : 8대 공동행동
-- 新兴经济体 : 신흥경제체
-- 六个现代化 : 6개 현대화
-- 六点共识 : 6가지 공동인식(러-우 전쟁 관련)
-- 十大伙伴行动 : 10대 동반자 행동
-- 建军一百年奋斗目标 : 건군 100년 분투 목표('27년 군 현대화)
-- 苏杰生 : 수브라마냠 자이샨카르(Subrahmanyam Jaishankar) 인도 외교장관
-- 埃蒂安法国外事顾问 : 필리프 에티엔(Philippe Etienne) 프랑스 외교보좌관
-- 法国国民议会第一副议长博纳尔 : 캐롤 뷰로 보나드(Carole Bureau-Bonnard) 프랑스 국민의회 副의장
-- 纳米比亚总统根哥布 : 하게 게인고브(Hage Geingob) 나미비아 대통령
-- 纳米比亚开国总统努乔马 : 샘 누조마(Sam Nujoma) 前 나미비아 대통령
-- 纳米比亚全国委员会主席门萨 : 마가렛 멘사 윌리엄스(Margaret Mensah-Williams) 나미비아 전국위원회(상원) 의장
-- 纳米比亚国民议회의장 카贾维维 : 피터 까챠비비(Peter Katjavivi) 나미비아 국민의회(하원) 의장
-- 俄罗斯联邦安全会议秘书助理韦涅季科托夫 : 알렉산드르 베네딕토프(Aleksandr Venediktov) 러시아 연방안보회의 서기 조리
-- 俄罗斯联邦安全会议秘书帕特鲁舍夫 : 니콜라이 파트루셰프(Nikolai Patrushev) 러시아 국가안보회의 서기
-- 荷兰外交大臣布洛克 : 스태프 블록(Stef Blok) 네덜란드 외무장관
-- 阿根廷外长福列 : 호르헤 파우리(Jorge Marcelo Faurie) 아르헨티나 외무장관
-- 智利外长安普埃罗 : 로베르또 암뿌에로(Roberto Ampuero) 칠레 외무장관
-- 玻利维亚国外交部长费尔南多·瓦纳库尼·马马尼 : 페르남도 우아나쿠니 마마니(Fernando Huanacuni Mamani) 볼리비아 외교부 장관
-- 蒙古国人民党总书记阿玛尔巴伊斯格楞 : 아마르바야쓰갈란 몽골 인민당 총비서
-- 南非国际关系与合作部长西苏鲁 : 린디웨 시슬루(Lindiwe Sisulu) 남아프리카 국제관계협력부 장관
-- 南非国家安全部长杜巴邀请 : 봉가니 봉고(Bongani Bongo) 남아프리카공화국 국가안보부 장관
-- 摩洛哥王国最高司法权委员会主席、最高法院院长莫斯塔法·法拉斯 : 무스타파 파라스(Mustafa Fares) 모로코 최고사법권위원회 의장 兼 최고법원장
-- 白俄罗斯共和国总统办公厅副主任瓦列里·米茨克维奇 : 발레리 미츠키에비치(Valery Mitskevich) 벨라루스 대통령 비서실 副주임
-- 黎巴嫩경제와 무역장관 후리 : 라에드 쿠후리(Raed Khoury) 레바논 경제통상부 장관
-- 党主席斯齐亚沃尼率领의 아르헨티나공화국 방안당 : 움베르토 스키아보니(Humberto Schiavoni) 아르헨티나 공화주의 제안당 대표
-- 美国国务院负责国际安全与防扩散事务的助理国务卿福트 : 크리스토퍼 포드(Christopher Ford) 미국 국무부 국제안보·비확산 담당 차관보
-- 阿富汗首席执行관 압둘라 : 압둘라 압둘라(Abdullah Abdullah) 아프가니스탄 최고행정관
-- 世界领袖联盟主席弗赖贝加 : 비케 프레이베르가(Vaira Vīķe-Freiberga) 글로벌 리더 연합(Global Leaders Alliance) 의장
-- 阿富汗国家安全委员会대변인 : 자베드 파이살(Jawed Faisal) 아프가니스탄 국가안보위원회 대변인
 - 一带一路 : 일대일로(一帶一路, 중국-중앙아시아-유럽을 연결하는 육상ㆍ해상 실크로드. 출처: 연합뉴스)
+- 六个任何 : '6개 임의(六个任何, 어떤 개인·조직·정당·시기·형식·국토에 관한 대만독립도 허용하지 않겠다는 의미)'
+- 六点意见/胡六点 : '6가지 의견(六点意见, 하나의 중국 견지, 경제협력 추진, 중화민족 문화 선양, 인적교류 확대, 국가주권 수호, 적대상태 종결)'
+- 东北振兴 : 동북진흥(东北振兴, 동북3省(지린省·랴오닝省·헤이룽장省)의 낙후현상을 극복하고 노후화한 공업기지를 혁신하여 중국의 새로운 경제성장의 견인차로 육성한다는 전략)
+- 南水北调 : 남수북조(南水北调, 중국 남부 지역의 풍부한 담수 자원을 물이 부족한 북부 지역으로 끌어오는 중국의 수자원 확보정책사업)
+- 鲁班工坊 :루반공방(지방정부인 톈진(天津）市와 톈진 지역의 직업교육기관이 일대일로 지역의 현지 교육기관과 협력해 설립한 직업교육센터)
+- 两院 : 양원(两院, 중국과학원과 중국공정원의 통칭)
+- 中国外交部驻港公署 ：중국 외교부 홍콩 주재 특파원 공서
+- 两岸两会 : 양안 양회(해협양안교류기금회와 해협양안관계협회)
+- 中华全国青年联合会 : 중화전국청년연합회(전국청련, 中华全国青年联合会)
+- 中国工会 : 중화전국총공회(中华全国总工会, 중국공회, 1922년 설립된 중국 노동자 연합)
+- 亚洲基础设施投资银行(亞投行) : 아시아 인프라 투자은행(AIIB, Asian Infrastructure Investment Bank)
+- 国际货币基金 : 국제통화기금(IMF, International Monetary Fund)
+- 联合国安理会 : 국제연합 안전보장이사회(UNSC, United Nations Security Council)
+- 世界贸易组织：세계무역기구(WTO, World Trade Organization)
+- 东南亚国家联盟(东盟) : 동남아시아국가연합(ASEAN, Association of South-East Asian Nations)
+- 东盟人道主义援助中心 : 인도주의 재난지원 ASEAN 조정센터(AHA 센터, ASEAN Coordinating Centre for Humanitarian Assistance on disaster management)
+- 经济合作与发展组织 : 경제협력개발기구(OECD, Organization for Economic Cooperation and Development) 
+- 北大西洋公约组织 : 북대서양 조약 기구(NATO, North Atlantic Treaty Organization)
+- 国际海洋法法庭 : 국제해양법재판소(ITLOS, International Tribunal for the Law of the Sea)
+- 东非政府间发展组织 : 동아프리카 정부간개발기구(IGAD, The Intergovernmental Authority on Development) =伊加特
+- 常设仲裁法院 : 상설중재재판소(PCA, Permanent Court of Arbitration)
+- 核供应国集团 : 원자력공급국그룹(NSG, Nuclear Suppliers Group)
+- 国际移民组织 : 국제이주기구(IOM, International Organization for Migration)
+- 俄罗斯国家原子能公司 : 러시아국영원자력공사(ROSATOM, Russian Atomic Energy State Corporation)
+- 海牙国际法院 : 국제사법재판소(ICJ, International Court of Justice)
+- 各国议会联盟 : 국제의회연맹(IPU, Inter-Parliamentary Union)
+- 一中全会 ： 중국 공산당 중앙위원회 제1차 전체회의
+- 联合国: 국제연합(UN, United Nations)
+- 金色十年 : 금색의 10년(金色十年)
 - 四点主张 : 4대 주장(四点主张, 팔레스타인의 독립적인 건국과 팔레스타인-이스라엘 양측의 평화로운 공존을 유지해야 한다, 팔레스타인-이스라엘 間 대화만이 유일한 해결법이다,)
-- 정칭 : 정례 회담
-- 칭찬하며 : 높이 표하며
-- 회동 : 제목: 회동 (본문: 회담을 실시했다)
-- 장강 삼각주 : 창장삼각주
-- 양안 양회 : 양안 양회
-- 하나의 중국 : ‘하나의 중국(一个中国，중국 대륙과 홍콩, 마카오, 대만은 나뉠 수 없는 하나이고 따라서 합법적인 중국의 정부는 오직 하나라는 원칙. 출처: 중국외교부)’ 원칙
-- 92공식 : 92공식
-- 대만 해협 : 대만해협
-- 환태평양 : 환태평양경제동반자협정(TPP)
-- 8.17공보 : 8.17공보
-- 실크로드 경제벨트 : 실크로드 경제벨트
-- 양국쌍원 : 양국쌍원
-- 대외안정 : 대외안정
-- 청 태평양 2050 전략 : 《청 태평양 2050 전략》
-- 사불일무의 : 사불일무의
-- 두 국가 방안 : 두 국가 방안
-- 8대 공동행동 : 8대 공동행동
-- 이스라엘-하마스 전쟁 : 이스라엘-하마스 전쟁
-- 러시아-우크라이나 전쟁 : 러시아-우크라이나 전쟁
-- 인도태평양사령부 : 인도태평양사령부(USINDOPACOM)
-- 중국 해양경찰국 : 중국 해양경찰국
-- 대만 국가중산과학연구원 : 대만 국가중산과학연구원(NCSIST)
-- 에셜론 : 에셜론(Echelon)
-- 우주 적외선 시스템 : 우주 적외선 시스템(SBIRS)
-- 합동 정밀접근 및 착륙/착선 체계 : 합동 정밀접근 및 착륙/착선 체계(JPALS)
-- 블루 파트너십 : 블루 파트너십(Blue Partnership)
-- 덤핑 : 덤핑(Dumping, 채산을 무시하고 싼 가격으로 상품을 투매하는 일)
+- 五个一批: 오개일피(五个一批, 생산발전, 이주, 생태보상, 교육발전, 사회보장을 통한 빈민구제)
+- 互联互通 : 호련호통(互联互通, 신실크로드경제권 구축을 통한 아시아, 아프리카, 유럽 상호 연결전략)
+- 党际交流: 정당 間 교류
+- 国事访问 : 국빈방문
+- 正式访问 : 공식방문
+- 工作访问 : 실무방문
+- 二轨 : 투트랙(Two Track, 정치나 경영 따위에서, 어떤 일을 처리하기 위한 두 가지 경로)
+- 和平共处五项原则 : 평화공존 5원칙(和平共处五项原则, 주권과 영토보전의 상호 존중, 상호 불가침, 상호 내정 불간섭, 호혜평등, 평화공존)
+- 亲诚惠容 : 친성혜용(亲诚惠容, 친근ㆍ성실ㆍ혜택ㆍ포용)
+- 真实亲诚 : 진실친성(真实亲诚, 진정ㆍ실질ㆍ친근ㆍ성실)
+- 四好精神 : 4호정신(四好精神, 좋은 이웃, 친구, 동지, 협력 파트너가 된다)
+- 零和关系 : 제로섬 관계(어떤 시스템이나 사회 전체의 이익이 일정하여 한쪽이 득을 보면 반드시 다른 한쪽이 손해를 보는 관계)
+- 零和 : 제로섬 게임(Zero-Sum Game, 한쪽의 이득과 다른 쪽의 손실을 더하면 제로가 되는 게임)
+- 守望相助 : 수망상조(守望相助, 어려울 때 서로 협조하며 대응한다)
+- 严正交涉 : 강력한 반대의 뜻을 표하다 (외교용어)
+- 与邻为善 : 우린위선(与邻为善, 이웃 국가와 함께 선을 행하다)
+- 以邻为伴 : 이린위반(以邻为伴, 이웃 국가와 동반자 관계를 이루다)
+- 阿巴中美四方协调组 : 아프간과 파키스탄, 중국 그리고 미국이 참여한 ‘4자조정그룹(QCG, The Quadrilateral Coordination Group)’
+- 金砖五国 : 브릭스(BRICS, 브라질ㆍ러시아ㆍ인도ㆍ중국ㆍ남아프리카공화국 신흥경제 5개국)
+- 新开发银行 : 신개발은행(NDB, 브라질ㆍ러시아ㆍ인도ㆍ중국ㆍ남아프리카공화국 등 신흥경제 5대국으로 구성된 브릭스(BRICS)가 2016년 설립하려는 금융기구)
+- 南亚区域合作联盟 : 남아시아지역협력연합(SAARC, South Asian Association for Regional Cooperation)
+- 亚太经合组织 : 아시아태평양경제협력체(APEC, Asia Pacific Economic Cooperation)
+- 上海合作组织 : 상하이협력기구(SCO, Shanghai Cooperation Organization)
+- 欧洲经济组织 : 유라시아경제연합(EEU, Eurasian Economic Union)
+- 欧亚经济联盟 : 유라시아경제연합(EEU, Eurasian Economic Union)
+- 南南合作 : 남남협력(South-South cooperation, 개발도상국 사이에 이루어지는 국제적 협력)
+- 拉美和加勒比国家共同体 ：라틴아메리카-카리브해 국가공동체(CELAC, Community of Latin American and Caribbean States)
+- 世界领袖联盟 : 글로벌 리더 연합(Global Leaders Alliance)
+- 澜湄国家 : 란창강(澜沧江)-메콩강(Mekong R.) 국가(캄보디아ㆍ중국ㆍ라오스ㆍ미얀마ㆍ태국ㆍ베트남)
+- 中俄科技创新年 : 중국-러시아 과학기술 혁신의 해(中俄科技创新年, 2019년 6월 시진핑 국가주석과 푸틴 대통령은 2020ㆍ2021년을 중국-러시아 과학기술 혁신의 해로 지정함)
+- 经济走廊 : 경제회랑(중국정부가 일대일로(一带一路) 연선국가들과 중국을 철도 도로 송유관 등으로 연결하려는 구상)
+- 中巴经济走廊： 중국-파키스탄 경제회랑(CPEC, China-Pakistan Economic Corridor)
+- 2030年可持续发展议程 : 2030 지속가능발전의제(The 2030 Agenda for Sustainable Development)
+- 中国－东盟自由贸易协定 : 중국-ASEAN 자유무역협정(CAFTA, China-ASEAN Free Trade Agreement)
+- 跨太平洋伙伴关系协定 : 환태평양경제동반자협정(TPP, Trans-Pacific Partnership)
+- 中俄睦邻友好合作条约 : 중국-러시아 선린우호협력조약(中俄睦邻友好合作条约)
+- 中美三个联合公报 : 미국-중국 양국 간 3개의 공동성명(中美三个联合公报, 1972년 미중 공동성명, 1979년 미중 공동성명, 1982년 미중 공동성명. 출처: 중국외교부)
+- 中日四个政治文件 : 중국-일본 양국 間 4개 정치문건(1972년의 중일연합성명, 1978년의 중일평화우호조약, 1998년의 중일연합선언, ’08년의 전략적 호혜관계의 전면적 추진을 위한 중국-일본 양국의 연합성명(中日关于全面推进战略互惠关系的联合声明))
+- 中日和平友好条约: 중국-일본 평화우호조약(中日和平友好条约)
+- 互联网和数字经济路线图: APEC의 ‘인터넷디지털경제 로드맵(AIDER, APEC Internet and Digital Economy Roadmap)
+- 互联互通总体规划2025 : 마스터플랜(MPAC, Master Plan on ASEAN Connectivity, 《互联互通总体规划2025》)
+- 中日关系四点原则共识 :  중국-일본 양국 間 4개 원칙(중국-일본 양국 間 4개 정치문건의 정신과 원칙 준수, 역사를 직시하고 미래를 바라보는 정신의 견지, 댜오위다오(钓鱼岛) 분쟁 등 동중국해 분쟁 해결체계 도입, 다자, 양자연락채널을 통해 대화 진행 및 정치적 상호신뢰 강화)
+- 南海各方行为宣言 : 남중국해 분쟁당사국 행동선언(DOC, Declaration on the Conduct of Parties in the South Chinese Sea)
+- 海上意外相遇规则 : 해상에서의 우발적 충돌을 막기 위한 행동강령(CUES, Code for Unplanned Encounters at Sea)
+- 四好精神(中-越) : 4호정신(四好精神, 영원히 좋은 이웃, 좋은 친구, 좋은 동지, 좋은 동반자로 남자는 정신)
+- 海上意外相遇规则 : 해상에서의 돌발적 조우 규칙(海上意外相遇规则)
+- 南海行为准则 : 남중국해행동준칙(COC, Code of Conduct in the South China Sea)
+- 澜沧江－湄公河合作会议 :  ‘란창(澜沧)강-메콩(湄公)강’ 협력회의
+- 巴黎气候会议 : 파리기후협정(Paris Climate Change Accord, 2020년 이후 적용할 새로운 기후협약으로 1997년 채택한 교토의정서를 대체하는 것이다)
+- 区域全面经济伙伴关系 : 역내포괄적경제동반자협정(RCEP, Regional Comprehensive Economic Partnership)
+- 联合国世界粮食计划署 : 세계식량계획(WFP, World Food Programme)
+- 不扩散核武器条约 : 핵확산금지조약(NPT, Nuclear nonproliferation treaty)
+- 数字经济伙伴关系协定 : 디지털 경제 동반자 협정(DEPA, Digital Economy Partnership Agreement)
+- 香会 : 아시아안보회의(샹그릴라 대화)
+- 两会 : 양회(兩會, 전국인민대표대회와 전국인민정치협상회의. 출처: 연합뉴스)
+- 中国共产党第二十次全国代表大会 : 중국 공산당 제20차 전국대표대회(中国共产党第二十次全国代表大会, 이하 20차 당 대회)
+- 清迈倡议多边化 : 치앙마이 이니셔티브(CMIM, 외환위기 발생 방지하기 위한 ASEAN+한중일 間 역내 자금지원제도)
+- 联组会议 : 연조회의(联组会议, 형식은 전체회의와 동일하나 안건에 대한 표결과 결정이 없이 주요 문제에 대해 한 단계 심화된 심의를 실시하는 회의)
+- 四个高级别对话: '4개의 고위급 대화(중국-미국 양국 間 외교안보, 경제, 인문교류, 법 집행 및 네트워크 안보 등 분야 內 대화)'
+- 亚欧外长会议: 아시아유럽정상회의(ASEM, Asia Europe Meeting) 외교장관회의
+- 东南亚国家联盟 外长会议 : ASEAN 외교장관 회의
+- 东盟国防部长扩大会议 : 아세안 확대 국방장관회의(ADMM-Plus, ASEAN Defence Ministers’ Meeting Plus)
+- 东盟地区论坛 : 동남아시아국가연합 지역안보포럼(ARF, ASEAN Regional Forum)
+- 东亚峰会 : 동아시아 정상회의 (EAS, East Asia Summit)
+- 世界经济论坛 : 다보스포럼(DavosForum, 매년 스위스의 다보스에서 개최되는 '세계경제포럼' 연차총회의 통칭)
+- 亚欧会议 : 아시아유럽정상회의(ASEM, Asia-Europe Meeting)
+- 东北亚合作对话会 : 동북아시아협력대화(NEACD, Northeast Asia Cooperation Dialogue)
+- 中非合作论坛 : 중국-아프리카 협력포럼(FOCAC, Forum on China-Africa Cooperation)
+- 中国－葡语国家经贸合作论坛 : 중국-포르투갈어 사용국 공동체 경제ㆍ무역 협력포럼(The Forum for Economic and Trade Co-operation between China and Portuguese-speaking Countries)
+- 博鰲论坛 : 보아오포럼(BFA, Boao Forum for Asia, 매년 4월 중국 하이난(海南)省 충하이(瓊海)市의 보아오(博鰲) 지역에서 개최되는 아시아 지역경제 포럼)
+- 十六字方针(中-越) : '16자 방침(十六字方针, 중국-베트남 관계 방침으로 장기안정(长期稳定), 면향미래(面向未来), 선린우호(睦邻友好), 전면협력(全面合作))'  --- *면향미래보다는 미래지향이 낫지 않을까 싶습니다(2현준)
+- 泛黄海经济技术交流会议 : ‘한국-중국-일본 환황해경제기술교류회의(泛黄海经济技术交流会议)’
+- 中国-阿拉伯国家合作论坛: 중국-아랍국가 협력포럼(CASCF, China-Arab States Cooperation Forum)
+- 亚洲相互协作与信任措施会议（亚信） : 아시아 교류 및 신뢰구축회의(CICA, Conference on Interaction and Confidence Building Measures in Asia)
+- 美联储 : 미국 연방준비제도이사회(FRB, Federal Reserve Board)
+- 联合国海洋法公约 : 유엔해양법협약(UNCLOS, UN Convention On the Law of the Sea)
+- 상하이 정신(上海精神, 상호 신뢰, 호혜, 평등, 협상, 다양한 문명 존중, 공동 발전 추구. 출처: 시진핑외교사상 및 신시대중국외교)
+- 联合国大会/联大: 유엔총회(UNGA, United Nations General Assembly)
+- 依法治国 : 의법치국(依法治國, 법에 의한 국가통치)
+- 稳中求进 : 온중구진(稳中求进, 안정속의 진보추구)
+- 修身律己 : 수신율기(修身律己, 자신을 수양하고 단속하다)
+- 党风廉政 : 당풍염정(黨風廉政, 당의 기풍과 청렴한 정치)
+- 失职追责 : 직무유기에 대한 지속적인 문책을 시행
+- 求同存异: 구동존이(求同存异, 각자 다른 의견은 보류하고 공동이익을 추구하는 것)
+- 知事识人 : 지사식인(知事识人, 업무, 인사에 대한 연구를 결합하여 합리적인 간부 운용을 추진하는 방식)
+- 韬光养晦 : 도검양회(韬光养晦, 재능을 감추고 드러내지 않으며, 때를 기다린다. 1980년대 중국의 대외 정책)
+- 两个维护 : 2개 수호(两个维护, 시진핑 국가주석과 당중앙의 핵심적 지위를 결연히 수호하고 당중앙의 권위와 집중 통일 지도를 결연히 수호함)
+- 两个责任 : 2개 책임(两个责任, 당위원회는 주체 책임을 지고 기율위윈회는 감독의 책임을 진다)
+- 两个决议 : 2개 결의(两个决议, 여러 역사 문제에 대한 결의, 건국 이래 여러 중국 공산당 역사 문제에 대한 결의)
+- 两个结合 : 2개 결합(两个结合, 마르크스주의의 기본 원리를 중국의 구체적 현실 및 중국의 전통 문화와 결합)
+- 三个维护 : 3대수호(三个维护, 중국 공산당 중앙위원회의 권위, 중국 공산당의 핵심 권력, 중국 중앙군사위원회 주석책임제에 대한 수호)
+- 三医联动 : 삼의연동(三醫聯動, 병원과 의료보험 그리고 의약 개혁의 연동)
+- 三个代表: 3개 대표론(三个代表, 중국 공산당이 선진 생산력과 선진 문화, 광대한 인민의 근본 이익을 대표해야 한다는 정책 이념) 
+- 四个意识 : 4개 의식(四个意识, 정치ㆍ대국ㆍ핵심ㆍ모범의식)
+- 四个全面 : 4개 전면(四个全面, 전면적인 샤오캉사회 건설과 개혁 심화, 법치국가 실현, 당의 기율 확립)
+- 四个自信 : 4개 자신(四个自信, 중국 특색 사회주의에 대한 자신, 이론적 자신, 제도적 자신, 문화적 자신)
+- 四个伟大 : 4개 위대(四个伟大, 위대한 꿈, 위대한 사업, 위대한 프로젝트, 위대한 투쟁)
+- 四個合格 : 4개 합격(四個合格, 정치적 합격, 기율적 합격, 품행의 합격, 역할 및 성과의 합격)
+- 四种形态 : 4대 행태(四种形态, 당내관계의 정상화ㆍ대다수의 경미한 처벌ㆍ소수의 엄중 처벌ㆍ극소수의 기율위반으로 인한 입건조사)
+- 四个共同 : 4개 공동(四个共同, 정치적 상호신뢰 공동 촉진, 안보 및 안정 공동 수호, 번영 및 발전 공동 도모, 국제적 도의 공동 담당)
+- 四个应该 : 4개 응당(四个应该, 단결협력, 수망상조, 일심협력, 포용수용)
+- 四铁 : 4철(四铁, 중국 중앙군사위원회 기관이 가져야 하는 강철과 같은 신앙, 신념, 기율, 책임)
+- 四不 : 사불(四不, 약속은 변치 않고 선의는 변치 않으며, 압력에 굴복하지 않고 대결의 구 노선을 걷지 않는다)
+- 四不一没有 : 사불일몰유(四不一没有, 독립의 선언ㆍ국호의 변경ㆍ양국론 입헌의 추진ㆍ국민투표를 통한 상황 변화 추진을 하지 않으며, 국가통일 강령 및 국가통일회의 폐지는 없음)
+- 四有 : 4유(四有, 이상ㆍ도덕ㆍ문화ㆍ기율)
+- 五通 : 5통(五通, 정책소통ㆍ시설연동ㆍ무역활성화ㆍ자금융통ㆍ민심상통)
+- 五位一体 : 오위일체(五位一体, 경제ㆍ정치ㆍ문화ㆍ사회ㆍ생태문명 건설)
+- 五大家园: 5대 고향(五大家园, 평화로운 고향, 안정적인 고향, 번영하는 고향, 아름다움 고향, 우호적인 고향)
+- 五大发展理念 : 5대 발전이념(五大发展理念, 혁신, 협조, 녹색, 개방, 공유)
+- 六保 : 6대 보장(六保, 취업 보장, 민생 보장, 시장 주체 보장, 식량 에너지 안전 보장, 산업사슬 공급사슬 안정 보장, 기층 조직 업무 이행 보장)
+- 六稳 : 6개 안정(六稳, 안정적 취업, 금융, 대외무역, 외자유치, 투자, 예측 실현)
+- 七大风险 : 7대 리스크(七大风险, 정치, 이데올로기, 경제, 과학기술, 사회, 외부 환경, 당의 건설 등 7가지 분야에서의 위기)
+- 7个带头 : 7대 인솔(7个带头, 4대의식 강화 인솔, 시진핑 신시대 중국 특색 사회주의 사상 및 제19차 당대회 정신 관철 인솔, 보고요청 제도 이행 인솔, 민주집중제 관철ㆍ집행 인솔, 중국 공산당 중앙위원회 정책 안배에 대한 관철 인솔, 조사ㆍ연구 및 당풍 개선 인솔, 청렴ㆍ자율성 유지 인솔)
+- 双轨并进 : 쌍궤병진(双轨并进, 한반도 비핵화 프로세스와 북·미 평화협정체제 협상을 병행 추진하는 것)
+- 分阶段、同步走 : 단계적 동시 접근
+- 双中断(双暂停) : 쌍중단(双中断, 북한의 핵·미사일 개발 활동과 대규모 한·미 연합훈련을 동시에 중단하는 것) 을 위한 8개의 규정)
+- 一个中国 : ‘하나의 중국(一个中国，중국 대륙과 홍콩, 마카오, 대만은 나뉠 수 없는 하나이고 따라서 합법적인 중국의 정부는 오직 하나라는 원칙. 출처: 중국외교부)’ 원칙
+- 八点主张/江八点 : '8가지 주장(八点主张, 하나의 중국 견지, 대만과 타국의 정부 차원의 교류 금지, 양안 평화통일 담판 진행, 평화통일 노력, 양안 경제 교류 및 협력 발전, 중화문화 공동발전, 대만인의 생활방식 존중, 대만 지도자의 중국 방문 환영)'
+- 六个任何 : '6개 임의(六个任何, 어떤 개인·조직·정당·시기·형식·국토에 관한 대만독립도 허용하지 않겠다는 의미)'
+- 六点意见/胡六点 : '6가지 의견(六点意见, 하나의 중국 견지, 경제협력 추진, 중화민족 문화 선양, 인적교류 확대, 국가주권 수호, 적대상태 종결)'
+- 告台湾同胞书 : '대만 동포에게 고하는 글(告臺灣同胞書, 1979년 1월 1일 중국 전국인민대표대회 상무위원회 선언문)'
+- 习五条 : '시진핑의 5가지 조항(习五条, 시진핑 국가주석이 '19년도 대만 동포에게 고하는 글 발표 40주년 기념 연설에서 제의한 5가지 조항)'
+- 九二共识 : 92공식(九二共識, 1992년 ‘하나의 중국’을 인정하되 각자 명칭을 사용하기로 한 합의)
+- 4대 주장(四点主张, 팔레스타인의 독립적인 건국과 팔레스타인-이스라엘 양측의 평화로운 공존을 유지해야 한다, 팔레스타인-이스라엘 間 대화만이 유일한 해결법이다,)
+- 新南向政策 : 신남향정책(新南向政策, 대만이 중국에 대한 경제 의존도를 줄이고자 동남아와의 교류를 확대하는 정책)
+- 新南向國家 : 신남향국가(新南向國家, 대만 신남향정책의 대상국인 오스트레일리아, 뉴질랜드, 싱가포르, 말레이시아, 필리핀, 베트남, 태국, 미얀마, 라오스, 인도네시아, 브루나이, 인도, 방글라데시, 파키스탄, 스리랑카, 네팔, 부탄 등 국가들을 지칭함)
+- 一边一国 : 일변일국(一边一国, 중국과 대만은 하나의 국가가 아니라는 주장)
+- 遮羞布 : 치부를 가리는 천쪼가리
+- 一国两制  : 일국양제(一國兩制, ‘한 국가 두 체제’라는 뜻으로, 중국이 하나의 국가 안에 자본주의와 사회주의 체제를 모두 인정한다는 방식)
+- 小三通 : 소삼통(小三通, 중국 푸젠省과 대만 푸젠省 間 비지니스·항공노선·우편 연결 프로젝트)
+- 海協會 : 해협양안관계협회(海峡两岸关系协会)
+- 海基會 : 해협교류기금회(海峽交流基金會)
+- 臺企聯 : 전국대만동포투자기업친목회(全国台湾同胞投资企业联谊会)
+- 囯台辦 : 중국 국무원 대만사무판공실
+- 臺商民營企業 : 대만기업민영은행(臺商民營企業)
+- 國民待遇 : 중국 국민과 같은 대우
+- 同等優先，適當放寬 : '동등한 대우가 우선이며, 적당히 완화한다.(同等優先，適當放寬)'
+- 比照外資，適當放寬 ：'해외 자본을 참고하고, 적당히 완화한다.(比照外資，適當放寬)'
+- 臺商投資企業聯合會 : '대만투자기업연합회(臺商投資企業聯合會)'
+- 臺盟 : '대만민주자치동맹(臺灣民主自治同盟, 이하 대만동맹)'
+- 連胡會 : '롄잔-후진타오 회담(롄잔 前 대만 副총통과 후진타오 前 중국 국가주석의 회담)'
+- 法理臺獨 ：'법리적 대만 독립(法理臺獨)'
+- 軟性臺獨 ：'연성 대만독립(軟性臺獨)'
+- 全国台联 ：'중화전국대만동포친목회(中华全国臺湾同胞联谊会， 이하 대만 친목회)'
+- 切香腸式臺獨 : '단계적인 대만 독립(窃香肠式台独)
+- 隐性台独 : '음성 대만독립(隐性台独)'
+- 區別待遇，分化瓦解，擴大多速，鼓勵少數 ：'차별대우·분열와해·다수확대·소수고립(區別待遇，分化瓦解，擴大多速，鼓勵少數)'
+- 老兵返鄉探親 ：'노병반향탐친(老兵返鄉探親, 양안의 이산가족상봉)'
+- 海峽論壇 : 해협 포럼
+- 引進來 : 인진라이(引進來, 중국으로 유인하다)
+- 四個堅持 :‘4대 견지(四個堅持, 자유 민주주의 헌법질서, 양안 간 상호 비(非)예속, 주권 침해 금지, 대만 인민의 자주적인 미래 결정)
+- 医院船 : 병원선
+- 导航卫星 ： 항법위성
+- 有效载荷: 페이로드(payload)
+- 综合补给船/综合补给舰 : 군수지원함
+- 从严治军 : 종엄치군(从严治军, 엄격한 중국 인민해방군 관리)
+- 依法治军 : 의법치군(依法治军, 법으로 중국 인민해방군을 관리)
+- 硬实力 : 하드파워(Hard Power, 군사력, 경제력 따위를 앞세워 상대방의 행동을 바꾸게 하거나 저지할 수 있는 힘)
+- 模块化 : 모듈화(modularization, 임무 수행을 위한 장비의 구성품을 세트화시킴으로써 전투 현장에서 즉각 정비가 가능하도록 지원하는 것)
+- 战区主战 : 전구주전(战区主战, 전구는 훈련과 작전임무를 주로 수행)
+- 军种主建 : 군종주건(军种主建, 군종은 해당 군종의 각종 보장 및 장비 공급을 담당)
+- 新时代备战打仗能力 : 신시대전비전투능력(新时代备战打仗能力)
+- 灰色地帶衝突 : 회색지대 침략 전술(정규군이 아닌 민병대나 민간을 활용해 도발하는 전술을 의미)
+- 四国机制 : '4국체제(四国机制, 중국, 아프가니스탄, 파키스탄, 타지키스탄 4개국 군대 間 對테러 협력 메커니즘)'
+- 两弹一星 : 양탄일성(两弹一星, 원폭ㆍ대륙간탄도미사일ㆍ인공위성을 함께 일컬음)
+- 三股势力 : 삼고세력(三股势力, 극단적 종교집단세력ㆍ민족분열세력ㆍ국제테러세력을 뜻함)
+- 工农红军 : 공농홍군(工农红军, 중국의 제2차 국공내전 당시 중국 공산당이 이끌던 군대)
+- 战斗值班任务 : 전투 대기 임무
+- 两个确立: 2개 확립(两个确立, 시진핑 국가주석의 당 핵심 지위 확립 및 시진핑 신시대 중국 특색 사회주의 사상의 지도적 지위 확립)
+- 六个更: ‘6가지 보다(六个更, 보다 높은 정치적 상호 신뢰, 보다 실질적인 안보 협력, 보다 심도 있는 실질적 협력, 보다 강력한 여론 기반, 보다 긴밀한 다자간 조정 및 협력, 보다 나은 갈등 및 이견 해결)’
+- 全面与进步跨太平洋伙伴关系协定 : 포괄적ㆍ점진적 환태평양경제동반자협정(CPTPP, Comprehensive and Progressive Agreement for Trans-Pacific Partnership)
+- 全球发展倡议: ‘글로벌 발전 이니셔티브(GDI, Global Development Initiative)’ㆍ‘글로벌 안보 이니셔티브(GSI, Global Security Initiative)’ㆍ‘글로벌 문명 이니셔티브(GCI, Global Civilization Initiative)’ㆍ '글로벌 거버넌스 이니셔티브(GGI, Global Governance Initiative)
+- 中俄关于相互通报发射弹道导弹和航天运载火箭的协定 : 중국-러시아 탄도 미사일 및 우주 로켓 발사 통보에 관한 합의
+- 三农 : 삼농(三农, 농업ㆍ농촌ㆍ농민)
+- 普惠金融 : 인클루시브 금융(Inclusive Finance, 영세기업, 농민, 도시저소득층, 빈곤계층, 장애인 및 노인 등 특수계층을 대상으로 하는 금융 서비스)
+- 五眼联盟 : 파이브 아이즈(Five Eyes)
+- 四边机制 : 쿼드(Quad, 미국ㆍ일본ㆍ호주ㆍ인도 4개국 안보 협의체)
+- 三边安全伙伴关系 : 오커스(AUKUS, 미국ㆍ영국ㆍ호주 안보 동맹)
+- 全方位战略伙伴关系/全面战略伙伴关系: 전면적인 전략적 동반자 관계
+- 中华人民共和国成立: 중화인민공화국 수립
+- 双重标准: 이중잣대
+- 政治互信: 정치적 상호 신뢰
+- 互补: 상호보완적
+- 多边机制: 다자간 플랫폼
+- 和平与安全: 평화ㆍ안보
+- 切实: 착실
+- 深入战略沟通: 심도 있는 전략적 소통
+- 广泛共识: 광범위한 공동 인식
+- 深厚民意基础: 두터운 민의를 기반으로 한다
+- 落实: 착실히 이행
+- 命运共同体: 양국 운명공동체
+- 领土完整: 영토 완전성
+- 取得积极进展: 긍정적 진전을 이뤘다.
+- 一系列: 일련의
+- 保护主义: 보호주의
+- 高度赞赏: 높이 평가
+- 矛盾: 갈등
+- 密切: 긴밀
+- 对话合作机制: 대화 협력 메커니즘
+- 重启: 재개
+- 尽快: 조속히
+- 以巴冲突: 이스라엘-하마스 전쟁
+- 兩岸: 양안(兩岸, 중국과 대만)
+- 第十五届中国国际航空航天博览会新闻发布会: 제15회 중국국제에어쇼 기자회견
+- 美军印太总部/美國印太司令部: 인도태평양사령부(USINDOPACOM, United States Indo-Pacific Command)
+- 欧盟: 유럽연합(EU, European Union)
+- 中國海警局: 중국 해양경찰국
+- 二十国集团: 주요 20개국(G20, Group of 20)
+- 全球南方国家: 글로벌 사우스(Global South, 남반구나 북반구의 저위도에 위치한 아시아, 아프리카, 남아메리카 등의 개발도상국을 통칭하여 일컫는 말. 출처: 연합뉴스)
+- 联合国全球反恐战略: 유엔 세계 대테러전략(UNGCTS, United Nations Global Counter-Terrorism Strategy)
+- 中科院（國家中山科學研究院）：대만 국가중산과학연구원(NCSIST, National Chung-Shan Institute of Science & Technology)
+- 第三届“一带一路”国际合作高峰论坛: 제3회 일대일로 국제협력 정상포럼
+- 长臂管辖: 확대 관할(일국의 법률 적용 범위를 나라 밖까지 확대하는 것)
+- 蓝色伙伴关系: 블루 파트너십(Blue Partnership, 제1차 유엔해양총회(UNOC, United Nations Ocean Conference)에서 중국 대표단이 지속 가능한 해양 거버넌스를 위한 국가 및 다자 기구의 공동 행동을 촉구하기 위해 제시한 이니셔티브)
+- 孔子学院: 공자학원(孔子学院, 중국 정부가 중국어 교육 및 중국의 사상과 문화를 전파ㆍ홍보하여 중국의 소프트파워 영향력을 강화할 목적으로 세계 각지에 설립한 기관)
+- 칭찬하다/감사의 뜻을 표하다 -> 높게 표하는 바이다/ 높게 평가하다
+- 회담 진행 -> 회담 실시 (제목에서는 회동)
+- 고도로 주의 -> 매우 우려
+- 인민 -> 국민 (대만일 경우 주민)
+- 소원 -> 염원/개인적 바람
+- 지역 -> 역내
+- 올라가다 -> 격상
+- 국방부 장관 ->국방장관
+- 외교부 부장 -> 외교부장
+- 지속적으로-> 지속해서 
+- 견지 -> 지지
+- 이번 -> 상기
+- 문제 -> 사안
+- 어려움 -> 난관
+- 나아가며 -> 전진하며
+- 끊임없이 -> 지속해서 
+- 모든 부정적인 것 -> 우려를 표하다
+- 통화 진행 -> 전화 회담 실시 
+- 무시 -> 왜곡
+- 파트너 -> 동반자
+- 도약 -> 격상
+- ~한다(informal 하게) -> ~한 바이다
+- 하고싶다 -> 희망한다 
+- ~에 불구하고 -> 막론하고 
+- ~것이다 -> ~예정이다 
+- 새로운 -> 신형
+- 큰 -> 보다 높은 수준의 
+- 마지막 -> 최종 
+- ~때문 -> ~에 비롯함
+- 다른 국가 -> 타국
+- ~에 위치 -> 소재
+- 고통 -> 난제
+- 개방 -> 재개
+- 보호 -> 수호 
+- 하였고 -> 했고
+
 `;
+
+interface GlossaryEntry {
+  keys: string[];       // alternate source-side match strings (already lowercased where relevant)
+  raw: string;           // the original full line, sent to the model as-is
+}
+
+let parsedGlossaryCache: GlossaryEntry[] | null = null;
+
+function getParsedGlossary(): GlossaryEntry[] {
+  if (parsedGlossaryCache) return parsedGlossaryCache;
+
+  const entries: GlossaryEntry[] = [];
+  const lines = FULL_GLOSSARY_TEXT.split('\n');
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith('-')) continue;
+    const body = trimmed.replace(/^-+\s*/, '');
+    const colonIdx = body.indexOf(':');
+    if (colonIdx === -1) continue;
+    const keyPart = body.slice(0, colonIdx).trim();
+    // Support "termA / termB" style alternate keys.
+    const keys = keyPart.split('/').map(k => k.trim()).filter(Boolean);
+    if (keys.length === 0) continue;
+    entries.push({ keys, raw: trimmed });
+  }
+
+  parsedGlossaryCache = entries;
+  return entries;
+}
+
+/**
+ * Returns only the glossary lines relevant to this specific source text,
+ * formatted the same way the full glossary used to be, so the model sees an
+ * identically-structured (just much shorter) list.
+ */
+function getRelevantGlossary(sourceText: string): string {
+  const entries = getParsedGlossary();
+  const matches = entries.filter(entry =>
+    entry.keys.some(key => key.length > 0 && sourceText.includes(key))
+  );
+
+  if (matches.length === 0) return '(No specific glossary entries matched this text - rely on the general translation rules above.)';
+
+  return matches.map(m => m.raw).join('\n');
+}
 
 const BRIEFING_INSTRUCTIONS = `
 ## Section 2: News Briefing
@@ -688,8 +519,7 @@ const BRIEFING_INSTRUCTIONS = `
 - Title: Use '회동' for meeting headlines.
 - Body: Use '회담을 실시했다.' for meetings in body text.
 - Country Order: Strictly follow this sequence: 1. 한국, 2. 미국, 3. 일본, 4. 중국.
-- Person Naming Rule: First mention: "NAME(Chinese_Name or English_Name) Nationality Occupation". Use Chinese Hanja characters for South Korea, North Korea, Japan, China, Taiwan, and Hong Kong (e.g. 푸충(傅聪) 중국 대사), and use English characters for all other nationalities (e.g. 존 설리번(John Sullivan) 미국 부장관). Subsequent mentions MUST be: "NAME Occupation".
-- Direct Speech Rule: Use " " for direct speech.
+- Person Naming Rule: First mention: "NAME(Chinese_Name or English_Name) Nationality Occupation". Use Chinese Hanja characters for South Korea, North Korea, Japan, China, Taiwan, and Hong Kong (e.g. 푸충(傅聪) UN 주재 중국 대사), and use English characters for all other nationalities (e.g. 존 설리번(John Sullivan) 미국 부장관). Subsequent mentions MUST be: "NAME Occupation".
 - Attribution Rule (Main Paragraph Formula): Every main paragraph representing spoken content MUST strictly follow this formula:
   Formula: [Name] [Occupation]은/는 [Optional Contextual Action(s). ]"[Complete Sentence 1 with Subject(은/는)] [Complete Sentence 2 with Subject(은/는)]."라고 밝혔다 or 라고 전했다.
   Combine all consecutive sentences spoken by the same person into one paragraph/block. End this block with ONE attribution: "라고 밝혔다." or "라고 전했다." Rotate between "밝혔다" and "전했다". NEVER use "덧붙였다".
@@ -744,7 +574,6 @@ const BRIEFING_INSTRUCTIONS = `
     6. "전면적 전략 대화를" -> object particle "를" is omitted to become "전면적 전략 대화".
     7. "주재할 예정이다." -> nominalized into "주재할 예정임." (음슴체).
 
-
 ### Briefing Output Structure:
 The Output Structure MUST strictly follow this exact order: title -> Metadata -> Publisher Name -> 질문: -> 대변인 -> 요약. Do NOT write any introduction lines, extra spokesperson names, or header labels.
 
@@ -758,21 +587,146 @@ The Output Structure MUST strictly follow this exact order: title -> Metadata ->
 3. Publisher Name (if provided):
 (Publisher Name)
 
-4. 질문:
+4. Introduction
+  'YY.MM.DD일, Korean Name(Chinese Name) ~~부 대변인은 정례브리핑을 실시했다.
+Ex. '26. 7. 24일, 린젠(林剑) 중국 외교부 대변인은 정례브리핑을 실시했다. 
+
+5. 질문:
 질문: 중국은 (Specific Context)에 대해 어떻게 평가하는가? (또는) 중국은 (Specific Context)에 대해 추가 설명을 할 수 있는가? (또는 context가 없을 시 "중국은 이에 대해 어떻게 평가하는가?", "중국은 이에 대해 추가 설명을 할 수 있는가?")
 
-5. 대변인:
+6. 대변인:
 대변인: ~~~
 
-6. 요약:
+7. 요약:
 요약:
 - {subject}, {summary}음슴체
 - {subject}, {summary}음슴체
 - {subject}, {summary}음슴체
 `;
 
+interface FewShotExample {
+  metadata: string;
+  sourceText: string;
+  output: string;
+}
+ 
+const GENERAL_EXAMPLE: FewShotExample = {
+  metadata: `Nation (국가): 중국
+Source (매체): 중국외교부
+Publisher Name (기자명/배포처): 일병 남상현
+Section: General News`,
+  sourceText: `王毅同摩尔多瓦副总理兼外长波普绍伊会谈
+2026-05-22 08:00
+2026年5月21日，中共中央政治局委员、外交部长王毅在北京同摩尔多瓦副总理兼外长波普绍伊举行会谈。
+王毅表示，中摩是友好伙伴。双方始终相互尊重、平等互利，稳健推进各领域务实合作，惠及两国人民。中方珍视中摩传统友谊，愿同摩方一道，不断夯实互信，深化互利合作，为双边关系发展注入动力，为两国人民创造福祉，为地区和平稳定作出贡献。
+王毅说，中国是负责任大国，坚定不移维护联合国宪章宗旨和原则，主张国家不分大小一律平等。我们赞赏摩方在涉及中方核心利益问题上坚持正确立场，支持摩方走本国人民选择、符合本国国情的发展道路，欢迎摩方挖掘潜力，更深入参与高质量共建"一带一路"。双方要用好中国国际进口博览会等平台，扩大经贸交流；新兴领域合作，打造投资增长点；加强教育、文化、旅游、青年交流，搭建民心相通新桥梁。面对变乱交织的世界，双方要携手践行四大全球倡议，维护好广大发展中国家正当权益。
+波普绍伊表示，摩尔多瓦高度重视发展对华关系，钦佩中国悠久历史文化和巨大发展成就，赞赏中国在国际事务中发挥的引领作用。摩方恪守一个中国原则，期待同中方加强互利共赢的伙伴关系，深化经贸、投资、人文和旅游等领域合作，推动摩中关系取得更大发展，更多造福两国人民。摩方愿同中方密切在联合国等多边舞台协作，共同维护多边主义，坚持国际法治，促进国际和地区和平稳定。
+双方还就乌克兰危机交换意见。王毅重申中方劝和促谈立场，表示中方将继续为推动危机的政治解决发挥建设性作用。`,
+  output: `. 中 외교부장, 몰도바 외교장관과 회동
+[ 중국. 중국외교부. 5. 22. 08:00(5. 22. 09:00) ]
+일병 남상현
+ 
+'26. 5. 21일, 왕이(王毅) 중국 외교부장은 중국 수도 베이징(北京)市에서 미하이 포페쇼이(Mihai Popsoi) 몰도바 외교장관과 회담을 실시했다.
+또한, 왕이 외교부장은 "중국ㆍ몰도바 양국은 우호적 동반자이다. 양국은 항상 상호 존중ㆍ평등ㆍ호혜를 견지하고 각 분야 내 실용적 협력을 안정적으로 추진해 양국 국민에게 혜택을 제공해 왔다. 중국은 양국 간 전통적인 우의를 소중히 여기고 몰도바와 함께 상호 신뢰를 지속해서 강화하며, 호혜적 협력을 심화하길 희망한다. 또한, 중국은 양국 관계 발전에 동력을 주입하고 양국 국민을 위한 복지를 창출하며, 역내 평화와 안정에 기여하길 희망한다."라고 밝혔다.
+아울러, 왕이 외교부장은 "중국은 책임감 있는 대국으로서 변함없이 『국제연합 헌장(United Nations Charter)』의 목적과 원칙을 수호하고 국가의 규모와 상관없이 모든 국가가 평등하다는 것을 주장한다. 또한, 중국은 중국의 핵심 이익과 관련된 사안에 대해 올바른 입장을 견지하는 몰도바를 높이 평가한다. 아울러, 중국은 몰도바가 몰도바 국민이 선택한 몰도바 상황에 맞는 발전 경로를 따르는 것을 지지한다. 중국은 몰도바가 잠재력을 발휘하고 '일대일로(一帶一路, 중국-중앙아시아-유럽을 연결하는 육상ㆍ해상 실크로드. 출처: 연합뉴스)' 공동 구축에 심도 있게 참여하는 것을 환영한다. 양국은 '중국국제수입박람회(中国国际进口博览会)' 등 플랫폼을 활용해 경제 무역 교류를 확대하고 신흥 분야 내 협력을 통해 투자 성장 동력을 구축해야 한다. 또한, 양국은 교육ㆍ문화관광ㆍ청년 교류를 강화하고 양국 국민 간 소통을 위한 새로운 교량을 구축해야 한다. 아울러, 양국은 변화와 혼란이 교차하는 국제사회에서 함께 '4대 글로벌 이니셔티브(Global Initiative, 글로벌 발전 이니셔티브(GDI, Global Development Initiative)ㆍ글로벌 안보 이니셔티브(GSI, Global Security Initiative)ㆍ글로벌 문명 이니셔티브(GCI, Global Civilization Initiative)ㆍ글로벌 거버넌스 이니셔티브(GGI, Global Governance Initiative))'를 실천하고 광범위한 개발도상국의 정당한 권익을 수호해야 한다."라고 전했다.
+포페쇼이 외교장관은 "몰도바는 중국과의 관계 발전을 매우 중시하고 중국의 오랜 역사와 문화, 중국의 위대한 발전 성과를 높이 평가한다. 또한, 몰도바는 국제 사안에서 중국이 발휘하는 지도력을 높이 평가한다. 아울러, 몰도바는 '하나의 중국(一个中国，중국 대륙과 홍콩, 마카오, 대만은 나뉠 수 없는 하나이고 따라서 합법적인 중국의 정부는 오직 하나라는 원칙. 출처: 중국외교부)' 원칙을 준수하고 중국과의 '호혜공영(互利共赢, 국가 혹은 지역이 협력을 통해 위협ㆍ도전에 대응하고 이익을 추구함으로써 모두의 발전을 이루는 것. 출처: 바이두백과)' 동반자 관계를 강화하길 기대한다. 몰도바는 중국과 경제ㆍ무역ㆍ투자ㆍ인문ㆍ관광 등 다양한 분야 내 협력을 심화하고 양국 관계의 중대한 발전을 추진하며, 양국 국민에게 많은 혜택을 제공하길 희망한다. 또한, 몰도바는 '국제연합(UN, United Nations)' 등 다자 무대에서 중국과 긴밀히 협력하고 함께 다자주의를 수호하길 바란다. 아울러, 몰도바는 국제법을 견지하고 국제사회와 지역의 평화와 안정을 촉진하길 희망한다."라고 밝혔다.
+왕이 외교부장과 포페쇼이 외교장관은 우크라이나 위기에 대해서도 의견을 교환했다. 왕이 외교부장은 중국이 평화 회담을 촉진하는 입장을 재확인했으며, "중국은 우크라이나 위기의 정치적 해결을 추진하기 위해 계속해서 건설적인 역할을 발휘할 것이다."라고 전했다.`,
+};
+ 
+const BRIEFING_EXAMPLE: FewShotExample = {
+  metadata: `Nation (국가): 중국
+Source (매체): 중국외교부
+Publisher Name (기자명/배포처): 일병 남상현
+Section: Government Briefing`,
+  sourceText: `2026年5月25日外交部发言人毛宁主持例行记者会
+2026-05-25 17:30
+中新社记者：据报道，5月24日，巴基斯坦俾路支省一列客运列车遭爆炸袭击，造成重大人员伤亡。"俾路支解放武装"宣称对袭击负责。巴基斯坦总理夏巴兹强烈谴责此次袭击事件，强调将坚定不移打击恐怖主义。请问中方对此有何评论？
+毛宁：中方注意到有关报道，强烈谴责此次恐怖袭击事件，对遇难者表示深切哀悼，向伤者和遇难者家属致以诚挚慰问。
+中方坚决反对一切形式的恐怖主义，将继续坚定支持巴基斯坦打击恐怖主义，维护社会团结稳定，保护民众安全。中方愿同巴方进一步加强反恐合作，共同维护地区和平安全稳定。`,
+  output: `. 中 외교부 대변인, 폭탄 테러 공격 받은 파키스탄 여객 열차 관련 입장표명
+[ 중국. 중국외교부. 5. 25. 17:30(5. 25. 18:30) ]
+일병 남상현
+ 
+'26. 5. 25일, 마오닝(毛宁) 중국 외교부 대변인은 정례브리핑을 실시했다.
+질문: '26. 5. 24일, 파키스탄 발루치스탄(Balochistan)洲에서 여객 열차는 폭탄 테러 공격을 받아 많은 사상자가 발생했다. '발루치스탄해방군(BLA, Balochistan Liberation Army)'은 상기 공격의 배후를 자처했다. 셰바즈 샤리프(Shehbaz Sharif) 파키스탄 총리는 상기 공격을 강력히 규탄했고 테러와의 단호한 싸움을 강조했다. 중국은 이에 대해 어떻게 평가하는가?
+대변인: 중국은 관련 보도에 주목하고 상기 테러 공격을 강력히 규탄한다. 또한, 중국은 희생자에 대해 깊은 애도를 표하며, 부상자와 희생자 가족에게 진심 어린 위로를 전한다.
+또한, 중국은 모든 형태의 테러리즘에 단호히 반대한다. 아울러, 중국은 파키스탄이 테러리즘을 타격하고 사회 단결과 안정을 수호하며, 국민의 안전을 수호하는 것을 지속해서 확고히 지지할 것이다. 중국은 파키스탄과 대테러 협력을 한층 더 강화하고 함께 역내 평화ㆍ안보ㆍ안정을 수호하길 희망한다.
+ 
+요약:
+- 中, 희생자에 대해 깊은 애도 표하고 부상자ㆍ희생자 가족에게 진심 어린 위로 전함.
+- 中, 모든 형태의 테러리즘에 단호히 반대함.
+- 中, 파키스탄과 대테러 협력 한층 더 강화하고 함께 역내 평화ㆍ안보ㆍ안정 수호하길 희망함.`,
+};
+ 
+function getFewShotExample(section: TranslationSection): FewShotExample {
+  return section === TranslationSection.GENERAL ? GENERAL_EXAMPLE : BRIEFING_EXAMPLE;
+}
+ 
+function buildFewShotUserTurn(example: FewShotExample): string {
+  return `
+### TRANSLATION METADATA:
+${example.metadata}
+ 
+### Relevant Glossary Matches (only entries found in the text below; apply per the Glossary Integration rule):
+(example turn - glossary omitted for brevity, rely on general rules)
+ 
+### Original Chinese Source text to translate:
+${example.sourceText}
+`;
+}
+ 
+/* ============================================================================
+ * EXPLICIT CONTEXT CACHING
+ * ----------------------------------------------------------------------------
+ * Both system instructions above are now fully static per section (no more
+ * per-request string substitution), so we can cache each of them once with
+ * Gemini's caches API and reuse the cache handle on every subsequent call.
+ * Cached input tokens are billed at a reduced rate instead of full price.
+ *
+ * NOTE: context caching has a minimum token-count requirement that varies by
+ * model (it has changed across Gemini model generations). Verify the current
+ * minimum for "gemini-3.1-flash-lite" against Google's docs - if the combined
+ * system instruction text falls under that minimum, ai.caches.create() will
+ * simply reject the request, in which case just skip caching and rely on
+ * savings (1) and (2) above alone.
+ * ==========================================================================*/
 
+const CACHE_MODEL = "gemini-2.5-flash-lite";
+const CACHE_TTL_SECONDS = 60 * 60 * 12; // 12 hours; recreate before this expires
+type CacheHandle = { name: string; expiresAt: number };
+const cacheHandles: Partial<Record<TranslationSection, CacheHandle>> = {};
 
+async function getCachedSystemInstruction(section: TranslationSection): Promise<string | undefined> {
+  const existing = cacheHandles[section];
+  const now = Date.now();
+  if (existing && existing.expiresAt > now + 5 * 60 * 1000) {
+    return existing.name;
+  }
+
+  const systemInstruction = section === TranslationSection.GENERAL
+    ? SYSTEM_INSTRUCTIONS_BASE + GENERAL_NEWS_INSTRUCTIONS
+    : SYSTEM_INSTRUCTIONS_BASE + BRIEFING_INSTRUCTIONS;
+
+  try {
+    const cache = await ai.caches.create({
+      model: CACHE_MODEL,
+      config: {
+        systemInstruction,
+        ttl: `${CACHE_TTL_SECONDS}s`,
+        displayName: `translator-${section}`,
+      },
+    });
+    cacheHandles[section] = { name: cache.name as string, expiresAt: now + CACHE_TTL_SECONDS * 1000 };
+    return cache.name as string;
+  } catch (error) {
+    // Caching is a cost optimization, not a correctness requirement - if it
+    // fails (e.g. below the model's minimum token threshold, or a transient
+    // API error), fall back to sending the system instruction uncached.
+    console.warn("Context cache creation failed, falling back to uncached system instruction:", error);
+    delete cacheHandles[section];
+    return undefined;
+  }
+}
 
 async function getLearnedPatterns(): Promise<string> {
   try {
@@ -816,82 +770,54 @@ export async function translateNews(
   publisherName: string = "",
   nation: string = "중국"
 ): Promise<string> {
-  const learnedPatterns = await getLearnedPatterns();
-  
-  const instruction = section === TranslationSection.GENERAL 
-    ? GENERAL_NEWS_INSTRUCTIONS 
-    : BRIEFING_INSTRUCTIONS;
+  const [learnedPatterns, cachedContentName] = await Promise.all([
+    getLearnedPatterns(),
+    getCachedSystemInstruction(section),
+  ]);
 
-  let dynamicSystemInstruction = SYSTEM_INSTRUCTIONS_BASE + instruction;
+  const relevantGlossary = getRelevantGlossary(text);
+  const publisherLine = publisherName && publisherName.trim()
+    ? publisherName.trim()
+    : '(none - completely omit the (Publisher Name) line from output)';
 
-  // Substitute (Nation) and (Source) placeholders with actual user-defined values
-  dynamicSystemInstruction = dynamicSystemInstruction
-    .replace(/\(Nation\)/g, nation)
-    .replace(/\{Nation\}/g, nation)
-    .replace(/\(Source\)/g, sourceName)
-    .replace(/\{Source\}/g, sourceName);
-
-  if (publisherName && publisherName.trim()) {
-    dynamicSystemInstruction = dynamicSystemInstruction
-      .replace(/\(Publisher Name\)/g, publisherName.trim());
-  } else {
-    // Remove (Publisher Name) placeholder and its newline entirely if no publisher name is supplied
-    dynamicSystemInstruction = dynamicSystemInstruction
-      .replace(/\(Publisher Name\)\n?/g, "");
-  }
-
+  // Compact per-request prompt: metadata + the small filtered glossary +
+  // source text + any learned corrections. Everything else (all the
+  // structural/grammar/formatting rules) already lives in the cached system
+  // instruction and does not need to be restated here.
   const prompt = `
 ### TRANSLATION METADATA:
-1. Nation (국가): ${nation}
-2. Source (매체): ${sourceName}
-3. Publisher Name (기자명/배포처): ${publisherName && publisherName.trim() ? publisherName.trim() : '(none - completely omit the (Publisher Name) line from output)'}
+Nation (국가): ${nation}
+Source (매체): ${sourceName}
+Publisher Name (기자명/배포처): ${publisherLine}
+Section: ${section === TranslationSection.GENERAL ? 'General News' : 'Government Briefing'}
 
-### Destination Section Style:
-- Section: ${section === TranslationSection.GENERAL ? 'General News' : 'Government Briefing'}
-
-### Output Formatting Instructions:
-- Ensure that the bracketed metadata line strictly uses: "[ ${nation}. ${sourceName}. (Month in original). (Day in original). (CST Time in original)((Month). (Day). (KST converted time)) ]"
-- For General News, if a Publisher Name is provided ("${publisherName && publisherName.trim() ? publisherName.trim() : ''}"), place it directly on its own line immediately below the bracketed metadata line. If it is empty/none, omit that line completely and begin the translated body text.
-- For Government Briefing, the output structure MUST strictly follow this exact order: title -> Metadata -> Publisher Name -> 질문: -> 대변인 -> 요약. Do NOT write any introduction lines, extra spokesperson names, or header labels.
-  * Title: Formatting MUST be exactly '. 中--부 대변인, ~~관련 입장 표명' (where '--부' is the abbreviated department, such as '. 中 외교부 대변인, ~~관련 입장 표명' or '. 中 상무부 대변인, ~~관련 입장 표명').
-    - General news title/headline rules strictly apply to this.
-    - If countries of China, United States, South Korea, Japan, and North Korea appear in the title, they MUST be written in Hanja abbreviation (中, 美, 韩, 日, 北). For example, "대중국" MUST become "대中" in the title.
-  * Metadata: The bracketed date/time line.
-  * Publisher Name: If a Publisher Name is provided ("${publisherName && publisherName.trim() ? publisherName.trim() : ''}"), place it directly on its own line immediately below the metadata bracket. If empty/none, omit this line entirely.
-  * 질문: Restate the question.
-    - CRITICAL: The number of sentences written in the original text of the question MUST be exactly equal to the number of sentences translated in the "질문:" section. Do not split, merge or omit sentences.
-    - OMIT REPORTER AFFILIATION (기자 소속): For every briefing question in the source text, there may be reporter affiliation / news agency mentioned (e.g., '로이터 기자', 'CCTV 기자', '신화사 기자', '路透社记者', '新华社记者', etc.). The translation MUST fully ignore them and completely omit any reporter affiliation/news agency from the "질문:" section. Just state "질문: (contextual question)?" without reference to who asked it.
-    - IGNORE REPORTER'S SOURCE BEFORE ":": The basic structure of the question in the original Chinese text is "Reporter's Source: Question". For the "질문:" section in translation, you MUST translate only the content occurring AFTER the ":" colon, completely ignoring and omitting any Reporter's Source or prefix before the ":" (including the colon itself).
-    - FULL AND COMPLETE QUESTION TRANSLATION (STRICT): For the "질문:" section, you MUST fully, completely, and literally translate all information, nuances, contexts, and meanings that appear after the ":" colon mark. Do NOT reduce, summarize, or abbreviate any content in the 질문 section. Every detail must be translated. You MUST strictly structure this translated question using either:
-      1. "중국은 [전체 질문 번역 내용]에 대해 어떻게 평가하는가?"
-      2. "중국은 [전체 질문 번역 내용]에 대해 추가 설명을 할 수 있는가?"
-      Example: If the text is "중국은 이란이 요청을 보냈는지에 대해 추가 설명을 할 수 있는가?", it must fully feature the details of the question without omitting anything.
-  * 대변인: Present the spokesperson's reply in first-person perspective, with no quotation marks.
-    - Since the spokesperson acts as the representative of China, the active subject representing their actions/stances MUST be "중국".
-    - First-person plural pronouns ("우리는", "저희는") or ambiguous/omitted subjects MUST be translated/replaced strictly with "중국" or other specific countries based on context.
-  * 요약: The concise bullet points. 
-    - SOURCE OF SUMMARY (STRICT): The content for the "요약:" section MUST come exclusively from the "대변인" section. You MUST select and pull out exactly three key sentences from the translated text of the "대변인" section, and summarize/rephrase them into the three summary bullet points in the "요약" section.
-    - CRITICAL Country Abbreviation Rule: The country single-character abbreviation rule that applies to the title MUST be strictly applied to 요약 as well. When these countries appear (United States, China, South Korea, Japan, and North Korea) anywhere in the bullet (including prefixes/suffixes, e.g. "대미", "대중"), you MUST write them as their single-character Hanja abbreviations (美, 中, 韩, 日, 北) (e.g., '대중국' MUST become '대중' or '대중' -> '대중' -> '대중' -> '대中', '미국 국가' MUST become '美 국가'). All other countries (e.g., 러시아, 프랑스, 독일) MUST be fully translated in their full Korean names and not abbreviated!
-    - LIMIT LENGTH (CRITICAL): Every summary bullet point (- {subject}, {summary}음슴체) in the '요약:' section MUST NOT exceed a maximum length of 50 characters, including the bullet hyphen and any spaces or punctuations. Keep the points extremely short and compact.
-    - No person names are permitted. Use comma (,) as topic marker and 음슴체 endings.
-    - CRITICAL SUBJECT RULE: Whenever the subject of a summary bullet point would be "중국 외교부" or "공동 외교 부장" or "中 외교부" (or any other variations of Chinese department/ministry), you MUST change the subject strictly to "중국" or abbreviated "중국의 한자 약어인 中" (e.g. "중국 외교부, ~할 것임" -> "중국, ~할 것임" or abbreviated: "공동 외교부, ~할 것임" -> "중국, ~할 것임" or abbreviated: "중국, ~할 것임" or "중국의 한자 약어인 中, ~할 것임" -> "중국, ~할 것임" or "中, ~할 것임").
+### Relevant Glossary Matches (only entries found in the text below; apply per the Glossary Integration rule):
+${relevantGlossary}
 
 ### Original Chinese Source text to translate:
 ${text}
-
 ${learnedPatterns}
 `;
 
+  // If the system instruction wasn't (or couldn't be) cached, fall back to
+  // sending it directly so translation quality is unaffected either way.
+  const fallbackSystemInstruction = cachedContentName
+    ? undefined
+    : (section === TranslationSection.GENERAL
+        ? SYSTEM_INSTRUCTIONS_BASE + GENERAL_NEWS_INSTRUCTIONS
+        : SYSTEM_INSTRUCTIONS_BASE + BRIEFING_INSTRUCTIONS);
+
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: CACHE_MODEL,
       contents: prompt,
       config: {
-        systemInstruction: dynamicSystemInstruction,
-        temperature: 0.1, // Custom temperature requested by the user
+        ...(cachedContentName ? { cachedContent: cachedContentName } : {}),
+        ...(fallbackSystemInstruction ? { systemInstruction: fallbackSystemInstruction } : {}),
+        temperature: 0.1,
         topP: 0.4,
         topK: 20,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW }
+        thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL }
       }
     });
 
@@ -964,7 +890,7 @@ Structure:
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: CACHE_MODEL,
       contents: prompt,
       config: {
         temperature: 0.1,

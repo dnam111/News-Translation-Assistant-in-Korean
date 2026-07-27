@@ -41,7 +41,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<Section>('general');
   const [sourceName, setSourceName] = useState('인터넷신화사');
   const [publisherName, setPublisherName] = useState('');
-  const [nationName, setNationName] = useState('영국');
+  const [nationName, setNationName] = useState('중국');
   const [chineseText, setChineseText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
   const [correctionText, setCorrectionText] = useState('');
@@ -112,6 +112,19 @@ export default function App() {
   };
 
   const handleTranslate = async (section: TranslationSection) => {
+    // 1. Validate inputs
+    if (!sourceName.trim() || !nationName.trim() || !publisherName.trim()) {
+      setError('Please fill in Source, Nation, and Publisher fields.');
+      return;
+    }
+    
+    // 2. Validate article content (needs to have title, published time, and paragraph)
+    const lines = chineseText.trim().split('\n').filter(line => line.trim().length > 0);
+    if (lines.length < 3) {
+      setError('Article must contain at least a title, published time, and a paragraph.');
+      return;
+    }
+
     if (!chineseText.trim()) return;
     
     setIsTranslating(true);

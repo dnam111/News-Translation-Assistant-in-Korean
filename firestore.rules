@@ -25,6 +25,16 @@ service cloud.firestore {
       allow update, delete: if false; // Immutability for logs
     }
 
+    // Corrections collection (English)
+    match /corrections_en/{correctionId} {
+      allow read: if true;
+      allow create: if true
+        && request.resource.data.keys().hasAll(['sourceText', 'aiTranslatedText', 'userCorrectedText', 'section', 'createdAt'])
+        && request.resource.data.sourceText is string
+        && request.resource.data.sourceText.size() <= 10000;
+      allow update, delete: if false;
+    }
+
     // Patterns collection
     match /patterns/{patternId} {
       allow read: if true;
@@ -33,6 +43,12 @@ service cloud.firestore {
 
     // Learned Patterns collection
     match /learned_patterns/{patternId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Learned Patterns collection (English)
+    match /learned_patterns_en/{patternId} {
       allow read: if true;
       allow write: if true;
     }

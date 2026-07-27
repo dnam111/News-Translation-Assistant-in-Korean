@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { collection, addDoc, query, getDocs, orderBy, limit, serverTimestamp, deleteDoc, doc, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
@@ -28,24 +28,38 @@ You are a professional Yonhap News-style translator specializing in translating 
 You must translate the entire English article accurately, objectively, and without omitting any content.
 
 ## BROAD STYLISTIC PRINCIPLES
-- Do NOT use honorific ending styles (like "~했습니다", "~습니까").
-- You MUST use the objective, plain declarative news style ending strictly in "~했다" or "~밝혔다" or "~전했다".
+- Do NOT use honorific endings. MUST use objective, plain declarative news style.
 - Keep the number of paragraphs in the translation exactly equal to the number of paragraphs in the source text.
 - Use clean, standard, idiomatic Korean media terminology.
+- Headline Rules:
+  * Prepended Dot: ALWAYS start with ". "
+  * Subject: (Subject/Organization), main content.
+  * Topic Marker: Use comma (,) instead of subject particles.
+  * No particles: Do NOT use "은", "는", "을", "를" in titles.
+  * Hanja: For China(中), United States(美), Korea(韩), Japan(日), North Korea(北), use Hanja in titles.
+- Metadata Format: [ Nation. Source. MM. DD. HH:MM (MM. DD. HH+1:MM) ]
+- Publisher Name: Immediately after the metadata line.
+- Person Naming Rule: First mention: "NAME(English_Name) Nationality Occupation". Subsequent: "NAME Occupation".
+- Attribution: ONLY use "~고 밝혔다." or "~고 전했다." IF AND ONLY IF it is a direct quote. Otherwise, do NOT add these.
+- Date Format: 'YY.MM.DD일(현지시간) for full date, 'YY.MM월 for month, 'YY년 for year. If time exists, 'YY.MM.DD일 HH:MM(현지시간) is mandatory. Date/Time MUST be at the very front.
+- Prohibited Terms: Ban "해당", "이런", "이것", "역시". Use "상기" instead.
+- Sentence Structure Rules: 
+  * MUST start with a subject/noun + '은' or '는'. Exactly ONE '은' or '는' per sentence.
+  * Date/Time MUST be at the very front of the sentence (e.g., 'YY.MM.DD일 or 'YY.MM.DD일 HH:MM(현지시간)).
+  * Sentence connection: Use '~고' before '~며,'. Max ONE '~고' and ONE '~며,' per sentence. If more required, split into new sentences.
+- Company Name Rule: [Nation] [Company] [Description] '[Company's Korean name](Company's English Name)'. e.g., 중국 언론사 '인터넷신화사(Xinhua News)'.
 `;
 
 const GENERAL_NEWS_INSTRUCTIONS = `
 ## GENERAL NEWS TRANSLATION RULES (ENG ➔ KO):
 
-### Headline Rules (제목)
-- Prepended Dot: ALWAYS start the headline with a dot and a space: ". (Headline)"
-- Structure: (Subject/Organization), main content.
-- Use a comma (,) as a topic marker instead of subject particles where appropriate.
-
-### Body Translation Rules (본문)
-- Initial Date Stamp: Every translation article must begin with the date at the very start of the first sentence. Format: 'YY. M. D일,
-- Translate and localize English idioms and terminology into formal Korean news press phrasing.
-- Ensure proper name notation (first mention: name with English in parentheses, subsequent mention: just name).
+### Body Translation Rules
+- Date Stamp: Every translation article must begin with the date (or date/time) at the very start of the first sentence of the body, using the specified format.
+- Country Order: Strictly follow sequence: 1. 한국, 2. 미국, 3. 일본, 4. 중국, 5. Other. (For multiple, use "양국" followed by country names).
+- Meeting Terminology: In headlines, use "회동". In the body text, use "회담을 실시했다."
+- Personnel Research: Ensure correct Korean naming.
+- Quotation Marks: Use " " ONLY for direct speech. If no one is speaking, do not use them.
+- Attribution Rotation: IF AND ONLY IF direct speech is present, end with "라고 밝혔다." or "라고 전했다.". Alternate between these for each paragraph. NEVER use "덧붙였다".
 `;
 
 async function getEnglishLearnedPatterns(): Promise<string> {
@@ -115,7 +129,7 @@ export async function translateEnglishNews(
 - Section: General News (English to Korean)
 
 ### Output Formatting Instructions:
-- Ensure that the bracketed metadata line strictly uses: "[ ${nation}. ${sourceName}. (Month in original). (Day in original). (Time in original) ]"
+- Ensure that the bracketed metadata line strictly uses: "[ ${nation}. ${sourceName}. (MM. DD. HH:MM in original text). (MM. DD. HH:MM in Korean KST) ]"
 - If a Publisher Name is provided ("${publisherName && publisherName.trim() ? publisherName.trim() : ''}"), place it directly on its own line immediately below the bracketed metadata line. If it is empty/none, omit that line completely and begin the translated body text.
 
 ### Original English Source text to translate:
@@ -126,13 +140,14 @@ ${learnedPatterns}
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-3.1-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: dynamicSystemInstruction,
         temperature: 0.1,
         topP: 0.4,
-        topK: 20
+        topK: 20,
+        thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL }
       }
     });
 
@@ -190,7 +205,7 @@ Structure:
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.1-flash-lite",
       contents: prompt,
       config: {
         temperature: 0.1,
