@@ -1,8 +1,37 @@
-import { GoogleGenAI, ThinkingLevel } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { collection, addDoc, query, getDocs, orderBy, limit, serverTimestamp, deleteDoc, doc, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
+const PRIMARY_MODEL = "gemini-2.5-flash-lite";
+const FALLBACK_MODEL = "gemini-3.1-flash-lite";
+
+async function generateContentWithFallback(params: { contents: any; config?: any }) {
+  try {
+    return await ai.models.generateContent({
+      model: PRIMARY_MODEL,
+      contents: params.contents,
+      config: params.config,
+    });
+  } catch (error: any) {
+    const isPermissionError =
+      error?.status === "PERMISSION_DENIED" ||
+      error?.code === 403 ||
+      error?.message?.includes("PERMISSION_DENIED") ||
+      error?.message?.includes("does not have permission") ||
+      error?.message?.includes("not found");
+
+    if (isPermissionError) {
+      console.warn(`Model '${PRIMARY_MODEL}' is not permitted/available under the current API key environment. Falling back to '${FALLBACK_MODEL}'.`);
+      return await ai.models.generateContent({
+        model: FALLBACK_MODEL,
+        contents: params.contents,
+        config: params.config,
+      });
+    }
+    throw error;
+  }
+}
 
 export enum EnglishTranslationSection {
   GENERAL = 'general'
@@ -139,15 +168,13 @@ ${learnedPatterns}
 `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3.1-flash-lite",
+    const response = await generateContentWithFallback({
       contents: prompt,
       config: {
         systemInstruction: dynamicSystemInstruction,
         temperature: 0.1,
         topP: 0.4,
-        topK: 20,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL }
+        topK: 20
       }
     });
 
@@ -204,8 +231,7 @@ Structure:
 }
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.1-flash-lite",
+    const response = await generateContentWithFallback({
       contents: prompt,
       config: {
         temperature: 0.1,

@@ -1,4 +1,4 @@
-import { GoogleGenAI, ThinkingLevel } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { collection, addDoc, query, getDocs, orderBy, limit, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
@@ -76,7 +76,7 @@ const GENERAL_NEWS_INSTRUCTIONS = `
 - Punctuation: Use a comma (,) as a topic marker.
 - Quotation marks (“ ”): Use only if the title contains a direct statement.
 - Country Abbreviations (Title ONLY) - STRICT RULE:
-  * When United States, China, South Korea, Japan, and North Korea appear in the title, they MUST be translated/written using single-character Hanja abbreviations (美, 中, 韩, 日, 北) (e.g., "대중국" MUST become "대중" or "대中", "미국 국가" MUST become "美 국가" in the title). This is a mandatory translation rule!
+  * When United States, China, South Korea, Japan, and North Korea appear in the title, they MUST be translated/written using single-character Hanja abbreviations (美, 中, 韩, 日, 北) (e.g., "대중국" MUST become "대중" or "대中", "미국 국가" MUST become "美 국가" in the title). This is a mandatory translation rule and must be strictly followed. 
   * absolutely any other country not listed above (e.g., Russia, France, Germany, etc.) MUST be written in its full Korean name (e.g. 러시아, 프랑스, 독일).
   * This rule of using Chinese characters for country abbreviations applies EXCLUSIVELY to the title.
 - Terminology: Use "회동" instead of "회담 실시" in titles. But if it's "전화 회담", use "전화 회담 실시" in titles. 
@@ -101,6 +101,7 @@ const GENERAL_NEWS_INSTRUCTIONS = `
    - Weapon Naming: "Country + missile name (English) + missile type + 미사일" (e.g., 미국 AGM-158 JASSM 순항 미사일).
    - Company Naming: "Country + 『company name (English)』 + 社" (e.g., 미국 『록히드마틴(Lockheed Martin)』社).
    - Regulation Formatting: Treat 『』 for regulations, ordinances, treaties, and media entities.
+   - Prohibit 중화인민공화국 from all text. Use 중국.
 3. Individual Naming & Title Structures:
    - Official Title (Strict Single-Role Limit): You must pick exactly one representative occupation per individual. 
      * Prohibited: Combining multiple titles, mentioning dual roles (겸직), or using the connective word "겸" anywhere in the translation. Discard secondary occupations completely.
@@ -121,7 +122,16 @@ const GENERAL_NEWS_INSTRUCTIONS = `
      * You are STRICTLY prohibited from placing a comma after '고' in all conjunction clauses. It MUST always be written as "~고" without any trailing comma (e.g. do NOT write "~고,").
    - Strict Vocabulary Bans: Under no circumstances use the word '측', the Korean character '들', the word '방중', or the word '이번' anywhere in any translation (including headlines, body, and summaries) under any circumstances. This is an absolute, zero-tolerance global ban! (Rules and mappings for these are fully specified above and are not repeated here.)
 5. Quotations & Spoken Content Formula:
-   - Direct Speech Validation: Use quotation marks (" ") only for direct speech. If no one is speaking, quotation marks are strictly banned.
+   - Quotation Trigger Rule (STRICT): If the source sentence contains '指出', '强调', or '表示', you MUST wrap that entire paragraph's spoken content in quotation marks (" "). This applies to virtually all diplomacy-related paragraphs. No exceptions.
+   - Direct Speech Validation: Use quotation marks (" ") only for direct speech. 
+   - Single-Speaker Paragraph Rule (ABSOLUTE, ZERO-TOLERANCE): If ONLY the FIRST sentence of a paragraph contains '指出', '强调', or '表示' (no other sentence in that paragraph contains one of these words), treat the ENTIRE paragraph as one continuous statement by a single speaker.
+  * MANDATORY STRUCTURE: [Name] [Occupation]은/는 "[Sentence 1][Sentence 2][Sentence 3]...[Last Sentence]."라고 밝혔다/전했다.
+  * Exactly ONE opening quote (") and ONE closing quote (") are permitted in this paragraph — placed at the very start and very end of the spoken content. It is a CRITICAL FAILURE to close and reopen quotation marks between sentences within this paragraph, even if the sentences cover different sub-topics.
+  * SELF-CHECK BEFORE OUTPUT: Count the quotation marks in the paragraph. If the count is not exactly 2 (one opening, one closing), the paragraph is WRONG and must be corrected.
+  * WORKED EXAMPLE (follow this exactly):
+    Source: "习近平指出，近年来，中巴命运共同体建设和两国发展战略对接取得积极进展...中方愿同巴方进一步加强双边和多边战略协作，延续两国命运共同体建设的良好态势。"
+    Correct output: 시진핑 중국 국가주석은 "중국-브라질 양국 운명공동체 관계의 최근 건설과 양국 발전 전략 교류는 긍정적 진전을 이뤘다. 상기 성과는 중국-브라질 양국 발전과 양국 국민 복지를 위해 중요한 역할을 수행하며, 동요하는 국제 정세에 귀중한 안정성을 주입했다. ’26년은 중국 공산당 창당 105주년이자 중국 『제15차 5개년 계획(十五五规划)』의 시작점이며, 브라질은 중요한 국내 정치 일정을 앞두고 있다. 중국은 브라질과 함께 양자 및 다자 전략 협력을 한층 강화하고 양국 운명공동체 건설의 양호한 추세를 이어가길 희망한다."라고 밝혔다.
+    WRONG (do NOT do this): 시진핑 중국 국가주석은 "...긍정적 진전을 이뤘다."라고 밝혔다. "상기 성과는...안정성을 주입했다."라고 전했다. (this incorrectly splits one speaker's paragraph into multiple quotes)
    - Quote Merging: If an individual speaks multiple consecutive sentences in the source text, merge them into a single continuous string inside one set of quotation marks.
    - Main Paragraph Formula: Any paragraph representing spoken content must strictly obey this structural blueprint:
      * Formula: [Name] [Occupation]은/는 [Optional Context Actions]. "[Complete Sentence 1 with Subject]. [Complete Sentence 2 with Subject]."[Attribution Verb]
@@ -561,7 +571,7 @@ const BRIEFING_INSTRUCTIONS = `
 7. Omission of Non-Essential Adverbs & Particles: Non-essential or redundant contextual adverbs (e.g., "상기 방문 기간 동안") should be removed or shortened to keep the summary concise, and relative object particles (like 을/를) should be omitted before nominalized/verb ending predicates (e.g., "~을 주재할 예정이다" -> "~ 주재할 예정임.") to make the flow natural. However, do NOT simplify the key facts of the actions.
 8. Text Structure: Excellent structure for each line is: "Subject, ~(translation)~음슴체" (e.g., "美, 이란의 공격 규탄함." or "中 외교부장, 브라질 외교장관과 공동으로 제5차 中-브라질 양국 외교장관급 전면적 전략 대화 주재할 예정임.").
 9. Bullet Character: Prefixed with a hyphen ("- ").
-
+10.Particles: Do NOT use "은", "는", "을", "를"
 ### CONCRETE EXAMPLE OF "요약" FORMULATION (STRICT ADHERENCE):
 - Original "대변인" sentence: "상기 방문 기간 동안 왕이(王毅) 중국 외교부장은 마우루 비에이라(Mauro Vieira) 브라질 외교장관과 공동으로 제5차 중국-브라질 외교장관급 전면적 전략 대화를 주재할 예정이다."
 - Corresponding "요약" bullet point: "- 中 외교부장, 브라질 외교장관과 공동으로 제5차 中-브라질 양국 외교장관급 전면적 전략 대화 주재할 예정임."
@@ -691,10 +701,38 @@ ${example.sourceText}
  * savings (1) and (2) above alone.
  * ==========================================================================*/
 
-const CACHE_MODEL = "gemini-2.5-flash-lite";
+const PRIMARY_MODEL = "gemini-2.5-flash-lite";
+const FALLBACK_MODEL = "gemini-3.1-flash-lite";
 const CACHE_TTL_SECONDS = 60 * 60 * 12; // 12 hours; recreate before this expires
 type CacheHandle = { name: string; expiresAt: number };
 const cacheHandles: Partial<Record<TranslationSection, CacheHandle>> = {};
+
+async function generateContentWithFallback(params: { contents: any; config?: any }) {
+  try {
+    return await ai.models.generateContent({
+      model: PRIMARY_MODEL,
+      contents: params.contents,
+      config: params.config,
+    });
+  } catch (error: any) {
+    const isPermissionError =
+      error?.status === "PERMISSION_DENIED" ||
+      error?.code === 403 ||
+      error?.message?.includes("PERMISSION_DENIED") ||
+      error?.message?.includes("does not have permission") ||
+      error?.message?.includes("not found");
+
+    if (isPermissionError) {
+      console.warn(`Model '${PRIMARY_MODEL}' is not permitted/available under the current API key environment. Falling back to '${FALLBACK_MODEL}'.`);
+      return await ai.models.generateContent({
+        model: FALLBACK_MODEL,
+        contents: params.contents,
+        config: params.config,
+      });
+    }
+    throw error;
+  }
+}
 
 async function getCachedSystemInstruction(section: TranslationSection): Promise<string | undefined> {
   const existing = cacheHandles[section];
@@ -708,14 +746,26 @@ async function getCachedSystemInstruction(section: TranslationSection): Promise<
     : SYSTEM_INSTRUCTIONS_BASE + BRIEFING_INSTRUCTIONS;
 
   try {
-    const cache = await ai.caches.create({
-      model: CACHE_MODEL,
-      config: {
-        systemInstruction,
-        ttl: `${CACHE_TTL_SECONDS}s`,
-        displayName: `translator-${section}`,
-      },
-    });
+    let cache;
+    try {
+      cache = await ai.caches.create({
+        model: PRIMARY_MODEL,
+        config: {
+          systemInstruction,
+          ttl: `${CACHE_TTL_SECONDS}s`,
+          displayName: `translator-${section}`,
+        },
+      });
+    } catch (primaryErr) {
+      cache = await ai.caches.create({
+        model: FALLBACK_MODEL,
+        config: {
+          systemInstruction,
+          ttl: `${CACHE_TTL_SECONDS}s`,
+          displayName: `translator-${section}`,
+        },
+      });
+    }
     cacheHandles[section] = { name: cache.name as string, expiresAt: now + CACHE_TTL_SECONDS * 1000 };
     return cache.name as string;
   } catch (error) {
@@ -770,9 +820,8 @@ export async function translateNews(
   publisherName: string = "",
   nation: string = "중국"
 ): Promise<string> {
-  const [learnedPatterns, cachedContentName] = await Promise.all([
+  const [learnedPatterns] = await Promise.all([
     getLearnedPatterns(),
-    getCachedSystemInstruction(section),
   ]);
 
   const relevantGlossary = getRelevantGlossary(text);
@@ -780,10 +829,6 @@ export async function translateNews(
     ? publisherName.trim()
     : '(none - completely omit the (Publisher Name) line from output)';
 
-  // Compact per-request prompt: metadata + the small filtered glossary +
-  // source text + any learned corrections. Everything else (all the
-  // structural/grammar/formatting rules) already lives in the cached system
-  // instruction and does not need to be restated here.
   const prompt = `
 ### TRANSLATION METADATA:
 Nation (국가): ${nation}
@@ -799,30 +844,28 @@ ${text}
 ${learnedPatterns}
 `;
 
-  // If the system instruction wasn't (or couldn't be) cached, fall back to
-  // sending it directly so translation quality is unaffected either way.
-  const fallbackSystemInstruction = cachedContentName
-    ? undefined
-    : (section === TranslationSection.GENERAL
+  // Helper to run translation
+  const runTranslation = async (): Promise<string> => {
+    const systemInstruction = (section === TranslationSection.GENERAL
         ? SYSTEM_INSTRUCTIONS_BASE + GENERAL_NEWS_INSTRUCTIONS
         : SYSTEM_INSTRUCTIONS_BASE + BRIEFING_INSTRUCTIONS);
 
-  try {
-    const response = await ai.models.generateContent({
-      model: CACHE_MODEL,
+    const response = await generateContentWithFallback({
       contents: prompt,
       config: {
-        ...(cachedContentName ? { cachedContent: cachedContentName } : {}),
-        ...(fallbackSystemInstruction ? { systemInstruction: fallbackSystemInstruction } : {}),
+        systemInstruction,
         temperature: 0.1,
         topP: 0.4,
-        topK: 20,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL }
+        topK: 20
       }
     });
 
     return response.text || "Translation failed.";
-  } catch (error) {
+  };
+
+  try {
+    return await runTranslation();
+  } catch (error: any) {
     console.error("Translation error:", error);
     throw error;
   }
@@ -889,8 +932,7 @@ Structure:
 }
 `;
 
-    const response = await ai.models.generateContent({
-      model: CACHE_MODEL,
+    const response = await generateContentWithFallback({
       contents: prompt,
       config: {
         temperature: 0.1,

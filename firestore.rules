@@ -15,6 +15,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Connection test rules
+    match /test/{testId} {
+      allow read: if true;
+    }
+    match /_connection_test/{testId} {
+      allow read: if true;
+    }
+
     // Corrections collection
     match /corrections/{correctionId} {
       allow read: if true;
