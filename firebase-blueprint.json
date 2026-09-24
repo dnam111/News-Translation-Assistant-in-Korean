@@ -30,11 +30,27 @@
   "firestore": {
     "corrections": {
       "schema": "Correction",
-      "description": "Logs of user corrections for later analysis."
+      "description": "Logs of user corrections for Chinese translations."
     },
     "patterns": {
       "schema": "LearnedPattern",
-      "description": "Extracted insights from corrections to improve future translations."
+      "description": "Extracted insights from Chinese corrections."
+    },
+    "corrections_en": {
+      "schema": "Correction",
+      "description": "Logs of user corrections for English translations."
+    },
+    "learned_patterns_en": {
+      "schema": "LearnedPattern",
+      "description": "Extracted insights from English corrections."
+    },
+    "corrections_ru": {
+      "schema": "Correction",
+      "description": "Logs of user corrections for Russian translations."
+    },
+    "learned_patterns_ru": {
+      "schema": "LearnedPattern",
+      "description": "Extracted insights from Russian corrections."
     }
   }
 }
