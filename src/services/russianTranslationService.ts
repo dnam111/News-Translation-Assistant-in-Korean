@@ -1,8 +1,7 @@
-import { GoogleGenAI } from "@google/genai";
 import { collection, addDoc, query, getDocs, orderBy, limit, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { callServerGemini } from './geminiClient';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
 const MODEL_NAME = "gemini-3.1-flash-lite";
 
 export enum RussianTranslationSection {
@@ -443,7 +442,7 @@ ${learnedPatterns}
 `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await callServerGemini({
       model: MODEL_NAME,
       contents: prompt,
       config: {
@@ -512,7 +511,7 @@ Output ONLY raw JSON:
 }
 `;
 
-    const response = await ai.models.generateContent({
+    const response = await callServerGemini({
       model: MODEL_NAME,
       contents: prompt,
       config: {

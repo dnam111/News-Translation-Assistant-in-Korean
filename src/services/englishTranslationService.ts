@@ -1,8 +1,19 @@
-import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { collection, addDoc, query, getDocs, orderBy, limit, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { callServerGemini } from './geminiClient';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
+export enum Type {
+  TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED",
+  STRING = "STRING",
+  NUMBER = "NUMBER",
+  INTEGER = "INTEGER",
+  BOOLEAN = "BOOLEAN",
+  ARRAY = "ARRAY",
+  OBJECT = "OBJECT",
+  NULL = "NULL",
+}
+export type Schema = any;
+
 const MODEL_NAME = "gemini-3.1-flash-lite";
 
 export enum EnglishTranslationSection {
@@ -1129,7 +1140,7 @@ ${learnedPatterns}
 `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await callServerGemini({
       model: MODEL_NAME,
       contents: prompt,
       config: {
@@ -1239,7 +1250,7 @@ Original English: "${sourceText}"
 User Corrected Korean: "${userCorrectedText}"
 `;
 
-    const response = await ai.models.generateContent({
+    const response = await callServerGemini({
       model: MODEL_NAME,
       contents: prompt,
       config: {
